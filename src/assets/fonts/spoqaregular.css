@@ -1,0 +1,9 @@
+@font-face {
+  font-family: 'spoqaregular';
+  src: url('spoqaregular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'spoqabold';
+  src: url('spoqabold.woff2') format('woff2');
+}

@@ -1,0 +1,91 @@
+@import url('./fonts/notosans.css');
+@import url('./fonts/spoqaregular.css');
+@import url('./fonts/yd2002.css');
+
+* {
+  -webkit-tap-highlight-color: transparent;
+  -moz-tap-highlight-color: transparent;
+  -ms-tap-highlight-color: transparent;
+}
+
+:root {
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: rgba(234, 232, 232, 0.1);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(234, 232, 232, 0.2);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(234, 232, 232, 0.1);
+  }
+}
+
+body {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  font-family: 'NotoSans' !important;
+}
+
+.text-shadow {
+  text-shadow:
+    -1px 0 #202429,
+    0 1px #202429,
+    1px 0 #202429,
+    0 -1px #202429;
+}
+
+.modal {
+  font-family: 'YD2002' !important;
+}
+
+.modal-header {
+  background: linear-gradient(to right, #32273b, #333149, #32273b);
+  color: white;
+  border-bottom: none;
+}
+
+.modal-body {
+  background: linear-gradient(to right, #2f2131, #3a2539, #2f2131);
+  color: white;
+}
+
+.modal-content {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+  background-color: transparent;
+}
+
+.modal input {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+}
+
+.modal input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.modal .form-control:focus {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.modal .btn {
+  background-color: #4c5265;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal .btn:active {
+  background-color: #4c5265;
+}
+
+a {
+  color: white;
+}
