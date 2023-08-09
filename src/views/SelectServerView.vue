@@ -25,12 +25,14 @@
               >
                 <div class="accordion-body">
                   <ul class="list-group" v-if="index < 1">
-                    <li
-                      class="list-group-item active d-flex justify-content-between align-items-start"
-                    >
-                      <div class="ms-2 me-auto">{{ item.content }}</div>
-                      <div>Vazio</div>
-                    </li>
+                    <a href="#">
+                      <li
+                        class="list-group-item active d-flex justify-content-between align-items-start"
+                      >
+                        <div class="ms-2 me-auto">{{ item.content }}</div>
+                        <div>Vazio</div>
+                      </li>
+                    </a>
                   </ul>
                 </div>
               </div>
@@ -47,6 +49,7 @@
         <button
           class="btn btn-secondary text-shadow shadow-none"
           :disabled="isSelectServerButtonDisabled"
+          @click="$router.push({ name: 'select-character' })"
         >
           Entrar no servidor
         </button>
@@ -124,7 +127,7 @@ h3 {
   bottom: 5%;
 }
 
-.list-group {
-  cursor: pointer;
+.list-group a {
+  text-decoration: none;
 }
 </style>
