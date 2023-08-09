@@ -1,122 +1,124 @@
 <template>
-  <div class="background-container" :style="`background-image: url(${images.loginBg});`"></div>
-  <div
-    class="modal fade"
-    :class="{ show: isLoginModalOpen }"
-    :style="{ display: isLoginModalOpen ? 'block' : 'none' }"
-    tabindex="-1"
-    role="dialog"
-  >
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header justify-content-center">
-          <h5 class="modal-title text-shadow">Logar na conta</h5>
-        </div>
-        <div class="modal-body">
-          <form class="mb-3" @submit.prevent="login">
-            <div class="mb-3">
-              <input
-                type="email"
-                class="form-control form-control-lg shadow-none text-shadow"
-                placeholder="E-mail"
-                required
-                v-model="email"
-              />
-            </div>
-            <div class="mb-3">
-              <input
-                type="password"
-                class="form-control form-control-lg shadow-none text-shadow"
-                placeholder="Senha"
-                required
-                v-model="password"
-              />
-            </div>
-            <div class="text-center">
-              <button
-                class="btn btn-secondary btn-lg text-shadow shadow-none"
-                :disabled="isLoginButtonDisabled || isDisabled"
-              >
-                Logar
-              </button>
-            </div>
-          </form>
-          <a href="#" @click="toggleModal">Cadastrar uma nova conta</a>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div
-    class="modal fade"
-    :class="{ show: isRegisterModalOpen }"
-    :style="{ display: isRegisterModalOpen ? 'block' : 'none' }"
-    tabindex="-1"
-    role="dialog"
-  >
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header justify-content-center">
-          <h5 class="modal-title text-shadow">Cadastrar uma nova conta</h5>
-        </div>
-        <div class="modal-body">
-          <form class="mb-3" @submit.prevent="register">
-            <div class="mb-3">
-              <input
-                type="email"
-                class="form-control form-control-lg shadow-none text-shadow"
-                placeholder="E-mail"
-                required
-                v-model="email"
-              />
-            </div>
-            <div class="mb-3">
-              <input
-                type="password"
-                class="form-control form-control-lg shadow-none text-shadow"
-                placeholder="Senha"
-                required
-                v-model="password"
-              />
-            </div>
-            <div class="mb-3">
-              <input
-                type="password"
-                class="form-control form-control-lg shadow-none text-shadow"
-                placeholder="Repita a senha"
-                required
-                v-model="confirmPassword"
-              />
-            </div>
-            <div class="mb-3">
-              <input
-                type="text"
-                class="form-control form-control-lg shadow-none text-shadow"
-                placeholder="Nome"
-                required
-                v-model="name"
-              />
-            </div>
-            <div class="text-center">
-              <button
-                class="btn btn-secondary btn-lg text-shadow shadow-none"
-                :disabled="isRegisterButtonDisabled"
-              >
-                Cadastrar
-              </button>
-            </div>
-          </form>
-          <a href="#" @click="toggleModal">Entrar na conta</a>
+  <div class="background-container" :style="`background-image: url(${images.loginBg});`">
+    <div
+      class="modal fade"
+      :class="{ show: isLoginModalOpen }"
+      :style="{ display: isLoginModalOpen ? 'block' : 'none' }"
+      tabindex="-1"
+      role="dialog"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header justify-content-center">
+            <h5 class="modal-title text-shadow">Logar na conta</h5>
+          </div>
+          <div class="modal-body">
+            <form class="mb-3" @submit.prevent="login">
+              <div class="mb-3">
+                <input
+                  type="email"
+                  class="form-control form-control-lg shadow-none text-shadow"
+                  placeholder="E-mail"
+                  required
+                  v-model="email"
+                />
+              </div>
+              <div class="mb-3">
+                <input
+                  type="password"
+                  class="form-control form-control-lg shadow-none text-shadow"
+                  placeholder="Senha"
+                  required
+                  v-model="password"
+                />
+              </div>
+              <div class="text-center">
+                <button
+                  class="btn btn-secondary btn-lg text-shadow shadow-none"
+                  :disabled="isLoginButtonDisabled || isDisabled"
+                >
+                  Logar
+                </button>
+              </div>
+            </form>
+            <a href="#" @click="toggleModal">Cadastrar uma nova conta</a>
+          </div>
         </div>
       </div>
     </div>
+    <div
+      class="modal fade"
+      :class="{ show: isRegisterModalOpen }"
+      :style="{ display: isRegisterModalOpen ? 'block' : 'none' }"
+      tabindex="-1"
+      role="dialog"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header justify-content-center">
+            <h5 class="modal-title text-shadow">Cadastrar uma nova conta</h5>
+          </div>
+          <div class="modal-body">
+            <form class="mb-3" @submit.prevent="register">
+              <div class="mb-3">
+                <input
+                  type="email"
+                  class="form-control form-control-lg shadow-none text-shadow"
+                  placeholder="E-mail"
+                  required
+                  v-model="email"
+                />
+              </div>
+              <div class="mb-3">
+                <input
+                  type="password"
+                  class="form-control form-control-lg shadow-none text-shadow"
+                  placeholder="Senha"
+                  required
+                  v-model="password"
+                />
+              </div>
+              <div class="mb-3">
+                <input
+                  type="password"
+                  class="form-control form-control-lg shadow-none text-shadow"
+                  placeholder="Repita a senha"
+                  required
+                  v-model="confirmPassword"
+                />
+              </div>
+              <div class="mb-3">
+                <input
+                  type="text"
+                  class="form-control form-control-lg shadow-none text-shadow"
+                  placeholder="Nome"
+                  required
+                  v-model="name"
+                />
+              </div>
+              <div class="text-center">
+                <button
+                  class="btn btn-secondary btn-lg text-shadow shadow-none"
+                  :disabled="isRegisterButtonDisabled"
+                >
+                  Cadastrar
+                </button>
+              </div>
+            </form>
+            <a href="#" @click="toggleModal">Entrar na conta</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <LoadingBarComponent :isLoading="loading" />
   </div>
-  <LoadingBarComponent :isLoading="loading" />
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import images from '@/data/imageData';
 import LoadingBarComponent from '@/components/LoadingBarComponent.vue';
+import router from '@/router';
 
 const isLoginModalOpen = ref(true);
 const isRegisterModalOpen = ref(false);
@@ -144,6 +146,7 @@ async function login() {
   setLoading(true);
   setTimeout(() => {
     setLoading(false);
+    router.push({ name: 'select-server' });
   }, 2000);
 }
 
@@ -157,11 +160,4 @@ function setLoading(value: boolean) {
 }
 </script>
 
-<style scoped>
-.background-container {
-  width: 100vw;
-  height: 100vh;
-  background-size: cover;
-  background-position: center;
-}
-</style>
+<style scoped></style>

@@ -84,14 +84,12 @@ watch(
 .progress {
   margin-bottom: 10px;
   background-color: #353437;
-  border: 2px solid #03030a;
   height: 25px;
   color: white;
 }
 
 .progress-bar {
   transition: width 0.5s ease;
-  background: linear-gradient(to bottom, #527c8c, #335874, #1c2f48);
 }
 
 .loading-text {

@@ -1,4 +1,5 @@
 import LoginRegisterView from '@/views/LoginRegisterView.vue';
+import SelectServerViewVue from '@/views/SelectServerView.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
 const router = createRouter({
@@ -6,9 +7,15 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
+      name: 'login-register',
       component: LoginRegisterView,
       meta: { title: 'Cabal Web' }
+    },
+    {
+      path: '/select-server',
+      name: 'select-server',
+      component: SelectServerViewVue,
+      meta: { title: 'Cabal Web - Seleção de servidores' }
     },
     {
       path: '/:catchAll(.*)',

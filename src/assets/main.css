@@ -32,6 +32,14 @@ body {
   -ms-user-select: none;
   user-select: none;
   font-family: 'NotoSans' !important;
+  color: white;
+}
+
+.background-container {
+  width: 100vw;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
 }
 
 .text-shadow {
@@ -77,15 +85,19 @@ body {
   color: white;
 }
 
-.modal .btn {
+.btn-secondary {
   background-color: #4c5265;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.modal .btn:active {
-  background-color: #4c5265;
+.btn:active {
+  background-color: #4c5265 !important;
 }
 
 a {
   color: white;
+}
+
+.container {
+  font-family: 'spoqaregular' !important;
 }
