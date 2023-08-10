@@ -11,18 +11,6 @@ export function getCharacterImage(characterId: number) {
       return images.characterWarrior;
     case 2:
       return images.characterBlader;
-    case 3:
-      return images.characterWarrior;
-    case 4:
-      return images.characterWarrior;
-    case 5:
-      return images.characterWarrior;
-    case 6:
-      return images.characterWarrior;
-    case 7:
-      return images.characterWarrior;
-    case 8:
-      return images.characterWarrior;
     default:
       return images.characterWarrior;
   }
@@ -48,6 +36,17 @@ export function getCharacterClassIcon(characterId: number) {
       return images.darkMageClass;
     default:
       return images.characterWarrior;
+  }
+}
+
+export function getCharacterPortrait(characterId: number) {
+  switch (characterId) {
+    case 1:
+      return images.characterWarriorPortrait;
+    case 2:
+      return images.characterBladerPortrait;
+    default:
+      return images.characterWarriorPortrait;
   }
 }
 

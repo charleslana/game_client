@@ -94,3 +94,15 @@ a {
 .container {
   font-family: 'spoqaregular' !important;
 }
+
+.grayscale {
+  filter: grayscale(100%);
+}
+
+img,
+a {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+}

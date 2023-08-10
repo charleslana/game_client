@@ -1,3 +1,4 @@
+import CreateCharacterViewVue from '@/views/CreateCharacterView.vue';
 import LoginRegisterView from '@/views/LoginRegisterView.vue';
 import SelectCharacterViewVue from '@/views/SelectCharacterView.vue';
 import SelectServerViewVue from '@/views/SelectServerView.vue';
@@ -23,6 +24,12 @@ const router = createRouter({
       name: 'select-character',
       component: SelectCharacterViewVue,
       meta: { title: 'Cabal Web - Seleção de personagens' }
+    },
+    {
+      path: '/create-character',
+      name: 'create-character',
+      component: CreateCharacterViewVue,
+      meta: { title: 'Cabal Web - Criar personagem' }
     },
     {
       path: '/:catchAll(.*)',

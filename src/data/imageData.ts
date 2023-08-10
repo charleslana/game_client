@@ -11,6 +11,8 @@ import forceBladerClass from '@/assets/images/classes/force_blader.png';
 import forceGunnerClass from '@/assets/images/classes/force_gunner.png';
 import forceShielderClass from '@/assets/images/classes/force_shielder.png';
 import wizardClass from '@/assets/images/classes/wizard.png';
+import characterWarriorPortrait from '@/assets/images/characters/warrior_portrait.png';
+import characterBladerPortrait from '@/assets/images/characters/blader_portrait.png';
 
 const images = {
   loginBg,
@@ -25,7 +27,9 @@ const images = {
   forceBladerClass,
   forceGunnerClass,
   forceShielderClass,
-  wizardClass
+  wizardClass,
+  characterWarriorPortrait,
+  characterBladerPortrait
 };
 
 export default images;

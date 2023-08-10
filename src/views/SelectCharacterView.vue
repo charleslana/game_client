@@ -12,13 +12,13 @@
           </button>
         </div>
         <div class="d-flex flex-column justify-content-center h-100" v-if="characterSelected">
-          <div class="card mb-5" style="width: 18rem">
+          <div class="card mb-5">
             <div class="card-body">
               <h5 class="card-title">Servidor Orion</h5>
               <p class="card-text info-color">Vazio</p>
             </div>
           </div>
-          <div class="card" style="width: 18rem">
+          <div class="card">
             <div class="card-body">
               <h5 class="card-title title-color">Localização atual</h5>
               <p class="card-text info-color">Tundra infame</p>
@@ -44,12 +44,10 @@
         </button>
       </div>
       <div class="col-sm-6" v-else></div>
-
       <div class="col-sm-3 select-b pt-3">
         <h3>Lista de personagens</h3>
         <div
           class="card mb-3"
-          style="max-width: 540px"
           v-for="character in userCharacters"
           :key="character.id"
           :class="{ selected: character === characterSelected }"
@@ -57,13 +55,15 @@
           <a href="#" @click="selectCharacter(character)">
             <div class="row g-0 align-items-center">
               <div class="col-md-4">
-                <img
-                  :src="character.icon"
-                  class="img-fluid mx-auto d-block"
-                  alt="Icon image"
-                  width="50"
-                  height="50"
-                />
+                <div class="card-body">
+                  <img
+                    :src="character.icon"
+                    class="img-fluid mx-auto d-block"
+                    alt="Icon image"
+                    width="50"
+                    height="50"
+                  />
+                </div>
               </div>
               <div class="col-md-8">
                 <div class="card-body">
@@ -76,20 +76,21 @@
         </div>
         <div
           class="card mb-3"
-          style="max-width: 540px"
           v-for="index in characterAvailable - userCharacters.length"
           :key="index"
         >
-          <a href="#">
+          <a href="#" @click="$router.push({ name: 'create-character' })">
             <div class="row g-0 align-items-center">
               <div class="col-md-4">
-                <img
-                  :src="images.iconPlus"
-                  class="img-fluid mx-auto d-block"
-                  alt="Icon image"
-                  width="50"
-                  height="50"
-                />
+                <div class="card-body">
+                  <img
+                    :src="images.iconPlus"
+                    class="img-fluid mx-auto d-block"
+                    alt="Icon image"
+                    width="50"
+                    height="50"
+                  />
+                </div>
               </div>
               <div class="col-md-8">
                 <div class="card-body">
