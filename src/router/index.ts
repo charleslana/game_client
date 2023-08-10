@@ -1,5 +1,6 @@
 import CreateCharacterViewVue from '@/views/CreateCharacterView.vue';
 import LoginRegisterView from '@/views/LoginRegisterView.vue';
+import OverViewVue from '@/views/OverView.vue';
 import SelectCharacterViewVue from '@/views/SelectCharacterView.vue';
 import SelectServerViewVue from '@/views/SelectServerView.vue';
 import { createRouter, createWebHistory } from 'vue-router';
@@ -30,6 +31,12 @@ const router = createRouter({
       name: 'create-character',
       component: CreateCharacterViewVue,
       meta: { title: 'Cabal Web - Criar personagem' }
+    },
+    {
+      path: '/overview',
+      name: 'overview',
+      component: OverViewVue,
+      meta: { title: 'Cabal Web - Visão Geral' }
     },
     {
       path: '/:catchAll(.*)',

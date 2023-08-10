@@ -2,7 +2,7 @@
   <div class="background-container" :style="`background-image: url(${images.selectCharacterBg});`">
     <div class="row m-0">
       <div class="col-sm-3 select-a pt-3">
-        <div class="d-flex">
+        <div class="d-flex justify-content-between">
           <h3>Selecionar personagem</h3>
           <button
             class="btn btn-dark text-shadow shadow-none"
@@ -33,12 +33,12 @@
       <div class="col-sm-6 position-relative" v-if="characterSelected">
         <img
           :src="characterSelected.image"
-          class="img-fluid mx-auto d-block character-img"
+          class="img-fluid mx-auto d-block character-img p-3"
           alt="Character image"
         />
         <button
           class="btn btn-secondary text-shadow shadow-none btn-lg centered-button"
-          @click="null"
+          @click="$router.push({ name: 'overview' })"
         >
           Iniciar
         </button>
@@ -65,11 +65,20 @@
                   />
                 </div>
               </div>
-              <div class="col-md-8">
+              <div class="col-md-6">
                 <div class="card-body">
                   <h5 class="card-title">Nv. {{ character.level }}</h5>
                   <p class="card-text">{{ character.name }}</p>
                 </div>
+              </div>
+              <div class="col-md-2">
+                <button
+                  type="button"
+                  class="btn-close shadow-none"
+                  aria-label="Close"
+                  v-if="character.level < 100 && characterSelected === character"
+                  @click="toggleModal"
+                ></button>
               </div>
             </div>
           </a>
@@ -102,6 +111,34 @@
         </div>
       </div>
     </div>
+    <div
+      class="modal fade"
+      :class="{ show: isDeleteModalOpen }"
+      :style="{ display: isDeleteModalOpen ? 'block' : 'none' }"
+      tabindex="-1"
+      role="dialog"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header justify-content-center position-relative">
+            <h5 class="modal-title text-shadow">Excluir personagem</h5>
+            <button
+              type="button"
+              class="btn-close shadow-none position-absolute delete"
+              aria-label="Close"
+              @click="toggleModal"
+            ></button>
+          </div>
+          <div class="modal-body text-center">
+            <p>A exclusão do personagem não pode ser revertida</p>
+            <p>Deseja excluir o personagem e liberar um slot?</p>
+            <button class="btn btn-secondary text-shadow shadow-none px-5" @click="null">
+              Excluir
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -110,9 +147,10 @@ import images from '@/data/imageData';
 import { onMounted, ref } from 'vue';
 import { getCharacterClassIcon, getCharacterImage, formatDate } from '@/utils/utils';
 
-const characterAvailable = ref(8);
+const characterAvailable = ref(5);
 const userCharacters = ref<Character[]>([]);
 const characterSelected = ref<Character>();
+const isDeleteModalOpen = ref(false);
 
 interface Character {
   id: number;
@@ -135,7 +173,7 @@ onMounted(() => {
     },
     {
       id: 2,
-      icon: images.warriorClass,
+      icon: getCharacterClassIcon(2),
       name: 'Personagem 2',
       level: 100,
       image: getCharacterImage(2),
@@ -148,6 +186,10 @@ onMounted(() => {
 const selectCharacter = (character: Character) => {
   characterSelected.value = character;
 };
+
+function toggleModal() {
+  isDeleteModalOpen.value = !isDeleteModalOpen.value;
+}
 </script>
 
 <style scoped>
@@ -202,5 +244,13 @@ const selectCharacter = (character: Character) => {
   bottom: 5%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.btn-close {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e");
+}
+
+.delete {
+  right: 2%;
 }
 </style>

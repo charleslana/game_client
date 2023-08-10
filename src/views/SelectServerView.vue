@@ -1,5 +1,5 @@
 <template>
-  <div class="background-container" :style="`background-image: url(${images.loginBg});`">
+  <div class="background-container" :style="`background-image: url(${images.bG});`">
     <div class="container">
       <div class="row justify-content-end">
         <div class="col-md-6 mt-3">

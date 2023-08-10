@@ -11,6 +11,18 @@ export function getCharacterImage(characterId: number) {
       return images.characterWarrior;
     case 2:
       return images.characterBlader;
+    case 3:
+      return images.characterWizard;
+    case 4:
+      return images.characterForceArcher;
+    case 5:
+      return images.characterForceShielder;
+    case 6:
+      return images.characterForceBlader;
+    case 7:
+      return images.characterForceGunner;
+    case 8:
+      return images.characterDarkMage;
     default:
       return images.characterWarrior;
   }
@@ -45,8 +57,43 @@ export function getCharacterPortrait(characterId: number) {
       return images.characterWarriorPortrait;
     case 2:
       return images.characterBladerPortrait;
+    case 3:
+      return images.characterWizardPortrait;
+    case 4:
+      return images.characterForceArcherPortrait;
+    case 5:
+      return images.characterForceShielderPortrait;
+    case 6:
+      return images.characterForceBladerPortrait;
+    case 7:
+      return images.characterForceGunnerPortrait;
+    case 8:
+      return images.characterDarkMagePortrait;
     default:
       return images.characterWarriorPortrait;
+  }
+}
+
+export function getCharacterName(characterId: number) {
+  switch (characterId) {
+    case 1:
+      return 'Guerreiro';
+    case 2:
+      return 'Duelista';
+    case 3:
+      return 'Maga';
+    case 4:
+      return 'Arqueira Arcana';
+    case 5:
+      return 'Guardiã Arcana';
+    case 6:
+      return 'Espadachim Arcano';
+    case 7:
+      return 'Atirador Arcano';
+    case 8:
+      return 'Mago Negro';
+    default:
+      return 'Guerreiro';
   }
 }
 

@@ -2,7 +2,7 @@
   <div class="background-container" :style="`background-image: url(${images.selectCharacterBg});`">
     <div class="row m-0">
       <div class="col-sm-3 select-a pt-3">
-        <div class="d-flex">
+        <div class="d-flex justify-content-between mb-2">
           <h3>Criar personagem</h3>
           <button
             class="btn btn-dark text-shadow shadow-none"
@@ -49,21 +49,27 @@
       <div class="col-sm-6 position-relative" v-if="characterSelected">
         <img
           :src="characterSelected.image"
-          class="img-fluid mx-auto d-block character-img"
+          class="img-fluid mx-auto d-block character-img p-3"
           alt="Character image"
         />
         <div class="centered card name-custom">
-          <form class="p-3" @submit.prevent="null">
+          <form class="p-3" @submit.prevent="null" autocomplete="off">
             <div class="mb-3">
               <label for="nameInput" class="form-label">Nome do personagem</label>
               <input
                 type="text"
                 class="form-control form-control-lg shadow-none input-custom"
                 id="nameInput"
+                required
+                v-model="name"
               />
             </div>
             <div class="text-center">
-              <button class="btn btn-secondary text-shadow shadow-none btn-lg" @click="null">
+              <button
+                class="btn btn-secondary text-shadow shadow-none btn-lg"
+                :disabled="isButtonDisabled || isDisabled"
+                @click="create"
+              >
                 Criar
               </button>
             </div>
@@ -115,16 +121,31 @@
         </div>
       </div>
     </div>
+    <LoadingBarComponent :isLoading="loading" />
   </div>
 </template>
 
 <script setup lang="ts">
 import images from '@/data/imageData';
-import { onMounted, ref } from 'vue';
-import { getCharacterClassIcon, getCharacterImage, getCharacterPortrait } from '@/utils/utils';
+import { computed, onMounted, ref } from 'vue';
+import {
+  getCharacterClassIcon,
+  getCharacterImage,
+  getCharacterPortrait,
+  getCharacterName
+} from '@/utils/utils';
+import LoadingBarComponent from '@/components/LoadingBarComponent.vue';
+import router from '@/router';
 
 const characters = ref<Character[]>();
 const characterSelected = ref<Character>();
+const isDisabled = ref(false);
+const name = ref('');
+const loading = ref(false);
+
+const isButtonDisabled = computed(() => {
+  return !name.value.trim();
+});
 
 interface Character {
   id: number;
@@ -138,24 +159,80 @@ onMounted(() => {
   characters.value = [
     {
       id: 1,
-      name: 'Guerreiro',
+      name: getCharacterName(1),
       icon: getCharacterClassIcon(1),
       portrait: getCharacterPortrait(1),
       image: getCharacterImage(1)
     },
     {
       id: 2,
-      name: 'Duelista',
+      name: getCharacterName(2),
       icon: getCharacterClassIcon(2),
       portrait: getCharacterPortrait(2),
       image: getCharacterImage(2)
+    },
+    {
+      id: 3,
+      name: getCharacterName(3),
+      icon: getCharacterClassIcon(3),
+      portrait: getCharacterPortrait(3),
+      image: getCharacterImage(3)
+    },
+    {
+      id: 4,
+      name: getCharacterName(4),
+      icon: getCharacterClassIcon(4),
+      portrait: getCharacterPortrait(4),
+      image: getCharacterImage(4)
+    },
+    {
+      id: 5,
+      name: getCharacterName(5),
+      icon: getCharacterClassIcon(5),
+      portrait: getCharacterPortrait(5),
+      image: getCharacterImage(5)
+    },
+    {
+      id: 6,
+      name: getCharacterName(6),
+      icon: getCharacterClassIcon(6),
+      portrait: getCharacterPortrait(6),
+      image: getCharacterImage(6)
+    },
+    {
+      id: 7,
+      name: getCharacterName(7),
+      icon: getCharacterClassIcon(7),
+      portrait: getCharacterPortrait(7),
+      image: getCharacterImage(7)
+    },
+    {
+      id: 8,
+      name: getCharacterName(8),
+      icon: getCharacterClassIcon(8),
+      portrait: getCharacterPortrait(8),
+      image: getCharacterImage(8)
     }
   ];
 });
 
 const selectCharacter = (character: Character) => {
   characterSelected.value = character;
+  name.value = '';
 };
+
+function setLoading(value: boolean) {
+  isDisabled.value = value;
+  loading.value = value;
+}
+
+async function create() {
+  setLoading(true);
+  setTimeout(() => {
+    setLoading(false);
+    router.push({ name: 'select-character' });
+  }, 2000);
+}
 </script>
 
 <style scoped>
@@ -209,7 +286,7 @@ const selectCharacter = (character: Character) => {
   position: absolute;
   bottom: 0;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -20%);
 }
 
 .form-text {

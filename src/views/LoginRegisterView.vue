@@ -1,5 +1,8 @@
 <template>
-  <div class="background-container" :style="`background-image: url(${images.loginBg});`">
+  <div class="background-container" :style="`background-image: url(${images.bG});`">
+    <div class="container d-flex justify-content-center pt-5">
+      <img :src="images.logo" class="img-fluid" alt="Logo image" />
+    </div>
     <div
       class="modal fade"
       :class="{ show: isLoginModalOpen }"
