@@ -94,6 +94,13 @@ const isSelectServerButtonDisabled = computed(() => {
 </script>
 
 <style scoped>
+.background-container {
+  width: 100vw;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+}
+
 h3 {
   color: #bccbd9;
 }

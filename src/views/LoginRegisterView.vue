@@ -160,4 +160,11 @@ function setLoading(value: boolean) {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.background-container {
+  width: 100vw;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+}
+</style>
