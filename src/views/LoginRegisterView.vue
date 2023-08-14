@@ -35,6 +35,18 @@
                   v-model="password"
                 />
               </div>
+              <div class="form-check mb-3">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="flexCheckDefault"
+                  v-model="isChecked"
+                  @change="changeLogin"
+                  :disabled="isLoginCheckDisabled"
+                />
+                <label class="form-check-label" for="flexCheckDefault"> Salvar e-mail </label>
+              </div>
               <div class="text-center">
                 <button
                   class="btn btn-secondary btn-lg text-shadow shadow-none"
@@ -118,10 +130,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import images from '@/data/imageData';
 import LoadingBarComponent from '@/components/LoadingBarComponent.vue';
 import router from '@/router';
+import { getLogin, saveLogin, removeLogin } from '@/utils/localStorageUtils';
 
 const isLoginModalOpen = ref(true);
 const isRegisterModalOpen = ref(false);
@@ -131,6 +144,7 @@ const confirmPassword = ref('');
 const name = ref('');
 const loading = ref(false);
 const isDisabled = ref(false);
+const isChecked = ref(false);
 
 const isLoginButtonDisabled = computed(() => {
   return !(email.value && password.value);
@@ -161,6 +175,30 @@ function setLoading(value: boolean) {
   isDisabled.value = value;
   loading.value = value;
 }
+
+onMounted(() => {
+  checkLogin();
+});
+
+function checkLogin() {
+  const login = getLogin();
+  if (login != null) {
+    isChecked.value = true;
+    email.value = login;
+  }
+}
+
+function changeLogin() {
+  if (!isChecked.value) {
+    removeLogin();
+    return;
+  }
+  saveLogin(email.value);
+}
+
+const isLoginCheckDisabled = computed(() => {
+  return !email.value.trim();
+});
 </script>
 
 <style scoped>
