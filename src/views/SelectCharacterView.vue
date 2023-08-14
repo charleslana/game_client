@@ -93,7 +93,7 @@
               <div class="col-md-4">
                 <div class="card-body">
                   <img
-                    :src="images.iconPlus"
+                    :src="images.plusIcon"
                     class="img-fluid mx-auto d-block"
                     alt="Icon image"
                     width="50"

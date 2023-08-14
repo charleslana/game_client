@@ -9,7 +9,7 @@ import characterForceShielder from '@/assets/images/characters/force_shielder.pn
 import characterForceBlader from '@/assets/images/characters/force_blader.png';
 import characterForceGunner from '@/assets/images/characters/force_gunner.png';
 import characterDarkMage from '@/assets/images/characters/dark_mage.png';
-import iconPlus from '@/assets/images/icons/plus.png';
+import plusIcon from '@/assets/images/icons/plus.png';
 import warriorClass from '@/assets/images/classes/warrior.png';
 import bladerClass from '@/assets/images/classes/blader.png';
 import darkMageClass from '@/assets/images/classes/dark_mage.png';
@@ -27,6 +27,9 @@ import characterForceBladerPortrait from '@/assets/images/characters/force_blade
 import characterForceGunnerPortrait from '@/assets/images/characters/force_gunner_portrait.png';
 import characterDarkMagePortrait from '@/assets/images/characters/dark_mage_portrait.png';
 import mapTundraInfame from '@/assets/images/map/tundra_infame_bg.png';
+import goldIcon from '@/assets/images/icons/gold.png';
+import diamondIcon from '@/assets/images/icons/diamond.png';
+import plusWhiteIcon from '@/assets/images/icons/plus_white.png';
 
 const images = {
   bG,
@@ -40,7 +43,7 @@ const images = {
   characterForceBlader,
   characterForceGunner,
   characterDarkMage,
-  iconPlus,
+  plusIcon,
   warriorClass,
   bladerClass,
   darkMageClass,
@@ -57,7 +60,10 @@ const images = {
   characterForceBladerPortrait,
   characterForceGunnerPortrait,
   characterDarkMagePortrait,
-  mapTundraInfame
+  mapTundraInfame,
+  goldIcon,
+  diamondIcon,
+  plusWhiteIcon
 };
 
 export default images;
