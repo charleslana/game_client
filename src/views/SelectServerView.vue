@@ -3,6 +3,9 @@
     <div class="container">
       <div class="row justify-content-end">
         <div class="col-md-6 mt-3">
+          <h3 class="text-shadow">Bem vindo, {{ getUserDetails()?.name }}</h3>
+        </div>
+        <div class="col-md-6 mt-3">
           <h3 class="text-shadow">Selecione o servidor</h3>
           <div class="accordion accordion-flush" id="accordionExample">
             <div class="accordion-item mb-2" v-for="(item, index) in accordionItems" :key="index">
@@ -59,9 +62,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import images from '@/data/imageData';
-import { logout } from '@/utils/utils';
+import { logout, checkLogged } from '@/utils/utils';
+import { getUserDetails } from '@/utils/localStorageUtils';
 
 const accordionItems = [
   {
@@ -91,6 +95,8 @@ function toggleAccordion(index: number) {
 const isSelectServerButtonDisabled = computed(() => {
   return !(activeAccordion.value === 0);
 });
+
+onMounted(() => checkLogged());
 </script>
 
 <style scoped>

@@ -126,6 +126,7 @@
       </div>
     </div>
     <LoadingBarComponent :isLoading="loading" />
+    <AlertComponent :isShow="showModal" :message="message" />
   </div>
 </template>
 
@@ -134,7 +135,20 @@ import { computed, onMounted, ref } from 'vue';
 import images from '@/data/imageData';
 import LoadingBarComponent from '@/components/LoadingBarComponent.vue';
 import router from '@/router';
-import { getLogin, saveLogin, removeLogin } from '@/utils/localStorageUtils';
+import {
+  getLogin,
+  saveLogin,
+  removeLogin,
+  saveToken,
+  saveCharacters,
+  saveUserDetails,
+  saveUserCharacters
+} from '@/utils/localStorageUtils';
+import PublicService from '@/service/PublicService';
+import AlertComponent from '@/components/AlertComponent.vue';
+import CharacterService from '@/service/CharacterService';
+import UserService from '@/service/UserService';
+import UserCharacterService from '@/service/UserCharacterService';
 
 const isLoginModalOpen = ref(true);
 const isRegisterModalOpen = ref(false);
@@ -145,13 +159,21 @@ const name = ref('');
 const loading = ref(false);
 const isDisabled = ref(false);
 const isChecked = ref(false);
+const showModal = ref(false);
+const message = ref('');
 
 const isLoginButtonDisabled = computed(() => {
   return !(email.value && password.value);
 });
 
 const isRegisterButtonDisabled = computed(() => {
-  return !(email.value && password.value && confirmPassword.value);
+  return !(
+    email.value &&
+    password.value &&
+    confirmPassword.value &&
+    name.value &&
+    password.value === confirmPassword.value
+  );
 });
 
 const isLoginCheckDisabled = computed(() => {
@@ -163,16 +185,75 @@ function toggleModal() {
   isRegisterModalOpen.value = !isRegisterModalOpen.value;
 }
 
-async function login() {
-  setLoading(true);
-  setTimeout(() => {
-    setLoading(false);
+async function login(): Promise<void> {
+  try {
+    setLoading(true);
+    const response = await PublicService.login({
+      email: email.value,
+      password: password.value
+    });
+    saveToken(response.token);
+    await getAllCharacters();
+    await getUserDetails();
+    await getAllUserCharacters();
     router.push({ name: 'select-server' });
-  }, 2000);
+  } catch (error: any) {
+    if (error.response && error.response.data.message) {
+      openModal(error.response.data.message);
+      setLoading(false);
+    }
+  }
 }
 
-async function register() {
-  console.log('register');
+async function register(): Promise<void> {
+  try {
+    loading.value = true;
+    const response = await PublicService.register({
+      email: email.value,
+      password: password.value,
+      name: name.value
+    });
+    if (response.error) {
+      openModal(response.message);
+      return;
+    }
+    await login();
+  } catch (error: any) {
+    if (error.response && error.response.data.message) {
+      openModal(error.response.data.message);
+      setLoading(false);
+    }
+  }
+}
+
+async function getAllCharacters(): Promise<void> {
+  try {
+    const response = await CharacterService.getAll();
+    saveCharacters(response);
+  } catch (error: any) {
+    openModal(error);
+    setLoading(false);
+  }
+}
+
+async function getUserDetails(): Promise<void> {
+  try {
+    const response = await UserService.getDetails();
+    saveUserDetails(response);
+  } catch (error: any) {
+    openModal(error);
+    setLoading(false);
+  }
+}
+
+async function getAllUserCharacters(): Promise<void> {
+  try {
+    const response = await UserCharacterService.getAll();
+    saveUserCharacters(response);
+  } catch (error: any) {
+    openModal(error);
+    setLoading(false);
+  }
 }
 
 function setLoading(value: boolean) {
@@ -198,6 +279,11 @@ function changeLogin() {
     return;
   }
   saveLogin(email.value);
+}
+
+function openModal(ms: string) {
+  message.value = ms;
+  showModal.value = !showModal.value;
 }
 </script>
 

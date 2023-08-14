@@ -91,6 +91,10 @@
 
 <script setup lang="ts">
 import images from '@/data/imageData';
+import { checkLogged } from '@/utils/utils';
+import { onMounted } from 'vue';
+
+onMounted(() => checkLogged());
 </script>
 
 <style scoped>

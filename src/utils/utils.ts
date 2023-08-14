@@ -1,12 +1,14 @@
 import images from '@/data/imageData';
 import router from '@/router';
+import { getToken, removeAll } from './localStorageUtils';
 
 export function logout() {
+  removeAll();
   router.push({ name: 'login-register' });
 }
 
 export function getCharacterImage(characterId: number) {
-  switch (characterId) {
+  switch (+characterId) {
     case 1:
       return images.characterWarrior;
     case 2:
@@ -29,7 +31,7 @@ export function getCharacterImage(characterId: number) {
 }
 
 export function getCharacterClassIcon(characterId: number) {
-  switch (characterId) {
+  switch (+characterId) {
     case 1:
       return images.warriorClass;
     case 2:
@@ -47,12 +49,12 @@ export function getCharacterClassIcon(characterId: number) {
     case 8:
       return images.darkMageClass;
     default:
-      return images.characterWarrior;
+      return images.warriorClass;
   }
 }
 
 export function getCharacterPortrait(characterId: number) {
-  switch (characterId) {
+  switch (+characterId) {
     case 1:
       return images.characterWarriorPortrait;
     case 2:
@@ -75,7 +77,7 @@ export function getCharacterPortrait(characterId: number) {
 }
 
 export function getCharacterName(characterId: number) {
-  switch (characterId) {
+  switch (+characterId) {
     case 1:
       return 'Guerreiro';
     case 2:
@@ -116,4 +118,10 @@ export function formatDate(date: Date): string {
   };
   const formattedDate: string = new Date(date).toLocaleString('pt-BR', options);
   return formattedDate.replace(',', ' às');
+}
+
+export function checkLogged(): void {
+  if (!getToken()) {
+    router.push({ name: 'login-register' });
+  }
 }

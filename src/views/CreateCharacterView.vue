@@ -18,14 +18,14 @@
                 <div class="row g-0 align-items-center">
                   <div class="col-md-4">
                     <img
-                      :src="characterSelected.icon"
+                      :src="getCharacterClassIcon(characterSelected.id)"
                       class="img-fluid mx-auto d-block"
                       alt="Icon image"
                     />
                   </div>
                   <div class="col-md-8">
                     <div class="card-body">
-                      <h5 class="card-title">{{ characterSelected.name }}</h5>
+                      <h5 class="card-title">{{ getCharacterName(characterSelected.id) }}</h5>
                     </div>
                   </div>
                 </div>
@@ -33,14 +33,7 @@
             </div>
             <div class="card-body">
               <p class="card-text">
-                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
-                Ipsum has been the industry's standard dummy text ever since the 1500s, when an
-                unknown printer took a galley of type and scrambled it to make a type specimen book.
-                It has survived not only five centuries, but also the leap into electronic
-                typesetting, remaining essentially unchanged. It was popularised in the 1960s with
-                the release of Letraset sheets containing Lorem Ipsum passages, and more recently
-                with desktop publishing software like Aldus PageMaker including versions of Lorem
-                Ipsum.
+                {{ characterSelected.description }}
               </p>
             </div>
           </div>
@@ -48,7 +41,7 @@
       </div>
       <div class="col-sm-6 position-relative" v-if="characterSelected">
         <img
-          :src="characterSelected.image"
+          :src="getCharacterImage(characterSelected.id)"
           class="img-fluid mx-auto d-block character-img p-3"
           alt="Character image"
         />
@@ -92,7 +85,7 @@
               <div class="col-md-3">
                 <div class="card-body">
                   <img
-                    :src="character.icon"
+                    :src="getCharacterClassIcon(character.id)"
                     class="img-fluid mx-auto d-block"
                     alt="Icon image"
                     width="50"
@@ -102,13 +95,13 @@
               </div>
               <div class="col-md-5">
                 <div class="card-body">
-                  <h5 class="card-title">{{ character.name }}</h5>
+                  <h5 class="card-title">{{ getCharacterName(character.id) }}</h5>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="card-body">
                   <img
-                    :src="character.portrait"
+                    :src="getCharacterPortrait(character.id)"
                     class="img-fluid mx-auto d-block"
                     alt="Icon image"
                     width="50"
@@ -132,13 +125,16 @@ import {
   getCharacterClassIcon,
   getCharacterImage,
   getCharacterPortrait,
-  getCharacterName
+  getCharacterName,
+  checkLogged
 } from '@/utils/utils';
 import LoadingBarComponent from '@/components/LoadingBarComponent.vue';
 import router from '@/router';
+import type ICharacter from '@/interface/ICharacter';
+import { getCharacters } from '@/utils/localStorageUtils';
 
-const characters = ref<Character[]>();
-const characterSelected = ref<Character>();
+const characters = ref<ICharacter[]>();
+const characterSelected = ref<ICharacter>();
 const isDisabled = ref(false);
 const name = ref('');
 const loading = ref(false);
@@ -147,76 +143,15 @@ const isButtonDisabled = computed(() => {
   return !name.value.trim();
 });
 
-interface Character {
-  id: number;
-  icon: string;
-  portrait: string;
-  name: string;
-  image: string;
-}
-
 onMounted(() => {
-  characters.value = [
-    {
-      id: 1,
-      name: getCharacterName(1),
-      icon: getCharacterClassIcon(1),
-      portrait: getCharacterPortrait(1),
-      image: getCharacterImage(1)
-    },
-    {
-      id: 2,
-      name: getCharacterName(2),
-      icon: getCharacterClassIcon(2),
-      portrait: getCharacterPortrait(2),
-      image: getCharacterImage(2)
-    },
-    {
-      id: 3,
-      name: getCharacterName(3),
-      icon: getCharacterClassIcon(3),
-      portrait: getCharacterPortrait(3),
-      image: getCharacterImage(3)
-    },
-    {
-      id: 4,
-      name: getCharacterName(4),
-      icon: getCharacterClassIcon(4),
-      portrait: getCharacterPortrait(4),
-      image: getCharacterImage(4)
-    },
-    {
-      id: 5,
-      name: getCharacterName(5),
-      icon: getCharacterClassIcon(5),
-      portrait: getCharacterPortrait(5),
-      image: getCharacterImage(5)
-    },
-    {
-      id: 6,
-      name: getCharacterName(6),
-      icon: getCharacterClassIcon(6),
-      portrait: getCharacterPortrait(6),
-      image: getCharacterImage(6)
-    },
-    {
-      id: 7,
-      name: getCharacterName(7),
-      icon: getCharacterClassIcon(7),
-      portrait: getCharacterPortrait(7),
-      image: getCharacterImage(7)
-    },
-    {
-      id: 8,
-      name: getCharacterName(8),
-      icon: getCharacterClassIcon(8),
-      portrait: getCharacterPortrait(8),
-      image: getCharacterImage(8)
-    }
-  ];
+  checkLogged();
+  const storedCharacters = getCharacters();
+  if (storedCharacters) {
+    characters.value = storedCharacters;
+  }
 });
 
-const selectCharacter = (character: Character) => {
+const selectCharacter = (character: ICharacter) => {
   characterSelected.value = character;
   name.value = '';
 };

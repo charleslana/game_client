@@ -32,7 +32,7 @@
       </div>
       <div class="col-sm-6 position-relative" v-if="characterSelected">
         <img
-          :src="characterSelected.image"
+          :src="getCharacterImage(characterSelected.character.id)"
           class="img-fluid mx-auto d-block character-img p-3"
           alt="Character image"
         />
@@ -57,7 +57,7 @@
               <div class="col-md-4">
                 <div class="card-body">
                   <img
-                    :src="character.icon"
+                    :src="getCharacterClassIcon(character.character.id)"
                     class="img-fluid mx-auto d-block"
                     alt="Icon image"
                     width="50"
@@ -145,45 +145,25 @@
 <script setup lang="ts">
 import images from '@/data/imageData';
 import { onMounted, ref } from 'vue';
-import { getCharacterClassIcon, getCharacterImage, formatDate } from '@/utils/utils';
+import { getCharacterClassIcon, getCharacterImage, formatDate, checkLogged } from '@/utils/utils';
+import type IUserCharacter from '@/interface/IUserCharacter';
+import { getUserCharacters } from '@/utils/localStorageUtils';
 
 const characterAvailable = ref(5);
-const userCharacters = ref<Character[]>([]);
-const characterSelected = ref<Character>();
+const userCharacters = ref<IUserCharacter[]>([]);
+const characterSelected = ref<IUserCharacter>();
 const isDeleteModalOpen = ref(false);
 
-interface Character {
-  id: number;
-  icon: string;
-  name: string;
-  level: number;
-  image: string;
-  createdAt: Date;
-}
-
 onMounted(() => {
-  userCharacters.value = [
-    {
-      id: 1,
-      icon: getCharacterClassIcon(1),
-      name: 'Personagem 1',
-      level: 10,
-      image: getCharacterImage(1),
-      createdAt: new Date()
-    },
-    {
-      id: 2,
-      icon: getCharacterClassIcon(2),
-      name: 'Personagem 2',
-      level: 100,
-      image: getCharacterImage(2),
-      createdAt: new Date('2020-05-01')
-    }
-  ];
+  checkLogged();
+  const storedUserCharacters = getUserCharacters();
+  if (storedUserCharacters) {
+    userCharacters.value = storedUserCharacters;
+  }
   // characterSelected.value = userCharacters.value[0];
 });
 
-const selectCharacter = (character: Character) => {
+const selectCharacter = (character: IUserCharacter) => {
   characterSelected.value = character;
 };
 
