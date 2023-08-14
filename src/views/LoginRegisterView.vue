@@ -154,6 +154,10 @@ const isRegisterButtonDisabled = computed(() => {
   return !(email.value && password.value && confirmPassword.value);
 });
 
+const isLoginCheckDisabled = computed(() => {
+  return !email.value.trim();
+});
+
 function toggleModal() {
   isLoginModalOpen.value = !isLoginModalOpen.value;
   isRegisterModalOpen.value = !isRegisterModalOpen.value;
@@ -195,10 +199,6 @@ function changeLogin() {
   }
   saveLogin(email.value);
 }
-
-const isLoginCheckDisabled = computed(() => {
-  return !email.value.trim();
-});
 </script>
 
 <style scoped>
