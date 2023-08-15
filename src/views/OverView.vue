@@ -52,6 +52,19 @@
             <div class="justify-content-center d-flex position-absolute w-100">100 / 100</div>
           </div>
         </div>
+        <div class="d-flex mt-3">
+          <a href="#" @click="openStatusModal">
+            <div class="d-flex flex-column align-items-center">
+              <img
+                :src="getCharacterPortrait(characterSelected.character.id)"
+                alt="Character icon"
+                width="50"
+                class="img-thumbnail"
+              />
+              <p class="text-shadow">Personagem</p>
+            </div>
+          </a>
+        </div>
       </div>
       <div class="col-sm-6">
         <div class="d-flex justify-content-evenly m-2">
@@ -78,9 +91,14 @@
         </div>
       </div>
       <div class="col-sm-3">
-        <a href="#" @click="logout">
-          <img :src="images.configMenu" alt="Menu icon" height="60" />
-        </a>
+        <div class="d-flex mt-2">
+          <a href="#" @click="logout">
+            <div class="d-flex flex-column align-items-center">
+              <img :src="images.configMenu" alt="Menu icon" width="50" class="img-thumbnail" />
+              <p class="text-shadow">Configurações</p>
+            </div>
+          </a>
+        </div>
       </div>
     </div>
     <div class="user-details">
@@ -105,6 +123,7 @@
         ></div>
       </div>
     </div>
+    <CharacterStatusComponent :isShow="showStatus" :characterSelected="characterSelected" />
     <LoadingBarComponent :isLoading="loading" />
     <AlertComponent :isShow="showModal" :message="message" />
   </div>
@@ -112,7 +131,13 @@
 
 <script setup lang="ts">
 import images from '@/data/imageData';
-import { checkLogged, checkSession, getCharacterClassIcon, formatNumber } from '@/utils/utils';
+import {
+  checkLogged,
+  checkSession,
+  getCharacterClassIcon,
+  formatNumber,
+  getCharacterPortrait
+} from '@/utils/utils';
 import { onMounted, ref } from 'vue';
 import { getUserCharacter, getUserDetails, removeUserCharacter } from '@/utils/localStorageUtils';
 import type IUserCharacter from '@/interface/IUserCharacter';
@@ -121,12 +146,14 @@ import UserCharacterService from '@/service/UserCharacterService';
 import LoadingBarComponent from '@/components/LoadingBarComponent.vue';
 import AlertComponent from '@/components/AlertComponent.vue';
 import router from '@/router';
+import CharacterStatusComponent from '@/components/CharacterStatusComponent.vue';
 
 const characterSelected = ref<IUserCharacter>();
 const userSelected = ref<IUser>();
 const loading = ref(false);
 const showModal = ref(false);
 const message = ref('');
+const showStatus = ref(false);
 
 onMounted(() => {
   checkLogged();
@@ -161,6 +188,10 @@ function openModal(ms: string) {
   message.value = ms;
   showModal.value = !showModal.value;
 }
+
+function openStatusModal() {
+  showStatus.value = !showStatus.value;
+}
 </script>
 
 <style scoped>
@@ -192,5 +223,9 @@ function openModal(ms: string) {
 
 .user-details .progress {
   height: 5px;
+}
+
+a {
+  text-decoration: none;
 }
 </style>
