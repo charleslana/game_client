@@ -114,7 +114,7 @@
               <div class="text-center">
                 <button
                   class="btn btn-secondary btn-lg text-shadow shadow-none"
-                  :disabled="isRegisterButtonDisabled"
+                  :disabled="isRegisterButtonDisabled || isDisabled"
                 >
                   Cadastrar
                 </button>
@@ -131,7 +131,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import images from '@/data/imageData';
 import LoadingBarComponent from '@/components/LoadingBarComponent.vue';
 import router from '@/router';
@@ -207,7 +207,7 @@ async function login(): Promise<void> {
 
 async function register(): Promise<void> {
   try {
-    loading.value = true;
+    setLoading(true);
     const response = await PublicService.register({
       email: email.value,
       password: password.value,
@@ -285,6 +285,12 @@ function openModal(ms: string) {
   message.value = ms;
   showModal.value = !showModal.value;
 }
+
+watch(email, (newEmail, oldEmail) => {
+  if (isChecked.value && newEmail !== oldEmail) {
+    saveLogin(newEmail);
+  }
+});
 </script>
 
 <style scoped>

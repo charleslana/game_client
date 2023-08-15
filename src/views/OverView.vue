@@ -1,15 +1,20 @@
 <template>
   <div
+    v-if="characterSelected && userSelected"
     class="background-container"
     :style="`background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${images.mapTundraInfame});`"
   >
     <div class="row m-0 p-2">
-      <div class="col-sm-3 m-2">
+      <div class="col-sm-3">
         <div class="d-flex align-items-center">
-          <img :src="images.warriorClass" alt="Icon" height="30" />
+          <img
+            :src="getCharacterClassIcon(characterSelected.character.id)"
+            alt="Icon"
+            height="30"
+          />
           <div class="d-flex flex-column text-shadow ms-2">
-            <div>Charles</div>
-            <div>Nv. 1</div>
+            <div>{{ characterSelected.name }}</div>
+            <div>Nv. {{ characterSelected.level }}</div>
           </div>
         </div>
         <div>
@@ -48,21 +53,35 @@
           </div>
         </div>
       </div>
-      <div class="col-sm-6 m-2">
-        <div class="d-flex justify-content-evenly">
-          <div class="text-shadow fw-bold d-flex align-items-center">
+      <div class="col-sm-6">
+        <div class="d-flex justify-content-evenly m-2">
+          <div
+            class="text-shadow fw-bold d-flex align-items-center"
+            v-tooltip
+            title="Alz"
+            data-bs-placement="bottom"
+          >
             <img :src="images.goldIcon" alt="Icon" height="25" class="me-2" />
-            <div class="me-2">7.000</div>
+            <div class="me-2">{{ formatNumber(characterSelected.alz) }}</div>
             <img :src="images.plusWhiteIcon" alt="Icon" height="25" class="me-2 plus-icon" />
           </div>
-          <div class="text-shadow fw-bold d-flex align-items-center">
+          <div
+            class="text-shadow fw-bold d-flex align-items-center"
+            v-tooltip
+            title="Diamante"
+            data-bs-placement="bottom"
+          >
             <img :src="images.diamondIcon" alt="Icon" height="25" class="me-2" />
-            <div class="me-2">667</div>
+            <div class="me-2">{{ formatNumber(userSelected.credit) }}</div>
             <img :src="images.plusWhiteIcon" alt="Icon" height="25" class="me-2 plus-icon" />
           </div>
         </div>
       </div>
-      <div class="col-sm-3 m-2"></div>
+      <div class="col-sm-3">
+        <a href="#" @click="logout">
+          <img :src="images.configMenu" alt="Menu icon" height="60" />
+        </a>
+      </div>
     </div>
     <div class="user-details">
       <div class="progress">
@@ -86,15 +105,62 @@
         ></div>
       </div>
     </div>
+    <LoadingBarComponent :isLoading="loading" />
+    <AlertComponent :isShow="showModal" :message="message" />
   </div>
 </template>
 
 <script setup lang="ts">
 import images from '@/data/imageData';
-import { checkLogged } from '@/utils/utils';
-import { onMounted } from 'vue';
+import { checkLogged, checkSession, getCharacterClassIcon, formatNumber } from '@/utils/utils';
+import { onMounted, ref } from 'vue';
+import { getUserCharacter, getUserDetails, removeUserCharacter } from '@/utils/localStorageUtils';
+import type IUserCharacter from '@/interface/IUserCharacter';
+import type IUser from '@/interface/IUser';
+import UserCharacterService from '@/service/UserCharacterService';
+import LoadingBarComponent from '@/components/LoadingBarComponent.vue';
+import AlertComponent from '@/components/AlertComponent.vue';
+import router from '@/router';
 
-onMounted(() => checkLogged());
+const characterSelected = ref<IUserCharacter>();
+const userSelected = ref<IUser>();
+const loading = ref(false);
+const showModal = ref(false);
+const message = ref('');
+
+onMounted(() => {
+  checkLogged();
+  checkSession();
+  const userCharacter = getUserCharacter();
+  const user = getUserDetails();
+  if (userCharacter && user) {
+    userSelected.value = user;
+    characterSelected.value = userCharacter;
+  }
+});
+
+async function logout(): Promise<void> {
+  try {
+    setLoading(true);
+    if (characterSelected.value) {
+      await UserCharacterService.logout();
+      removeUserCharacter();
+      router.push({ name: 'select-character' });
+    }
+  } catch (error: any) {
+    openModal(error);
+    setLoading(false);
+  }
+}
+
+function setLoading(value: boolean) {
+  loading.value = value;
+}
+
+function openModal(ms: string) {
+  message.value = ms;
+  showModal.value = !showModal.value;
+}
 </script>
 
 <style scoped>

@@ -1,6 +1,6 @@
 import images from '@/data/imageData';
 import router from '@/router';
-import { getToken, removeAll } from './localStorageUtils';
+import { getToken, getUserCharacter, removeAll } from './localStorageUtils';
 
 export function logout() {
   removeAll();
@@ -100,6 +100,7 @@ export function getCharacterName(characterId: number) {
 }
 
 export const formatNumber = (number: number): string => {
+  number = +number;
   return number.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
 };
 
@@ -123,5 +124,11 @@ export function formatDate(date: Date): string {
 export function checkLogged(): void {
   if (!getToken()) {
     router.push({ name: 'login-register' });
+  }
+}
+
+export function checkSession(): void {
+  if (!getUserCharacter()) {
+    router.push({ name: 'select-character' });
   }
 }

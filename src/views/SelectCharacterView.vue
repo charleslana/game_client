@@ -38,7 +38,8 @@
         />
         <button
           class="btn btn-secondary text-shadow shadow-none btn-lg centered-button"
-          @click="$router.push({ name: 'overview' })"
+          @click="select"
+          :disabled="isDisabled"
         >
           Iniciar
         </button>
@@ -132,13 +133,19 @@
           <div class="modal-body text-center">
             <p>A exclusão do personagem não pode ser revertida</p>
             <p>Deseja excluir o personagem e liberar um slot?</p>
-            <button class="btn btn-secondary text-shadow shadow-none px-5" @click="null">
+            <button
+              class="btn btn-secondary text-shadow shadow-none px-5"
+              @click="exclude"
+              :disabled="isDisabled"
+            >
               Excluir
             </button>
           </div>
         </div>
       </div>
     </div>
+    <LoadingBarComponent :isLoading="loading" />
+    <AlertComponent :isShow="showModal" :message="message" />
   </div>
 </template>
 
@@ -147,21 +154,37 @@ import images from '@/data/imageData';
 import { onMounted, ref } from 'vue';
 import { getCharacterClassIcon, getCharacterImage, formatDate, checkLogged } from '@/utils/utils';
 import type IUserCharacter from '@/interface/IUserCharacter';
-import { getUserCharacters } from '@/utils/localStorageUtils';
+import {
+  getUserCharacters,
+  removeUserCharacterById,
+  saveUserCharacter
+} from '@/utils/localStorageUtils';
+import LoadingBarComponent from '@/components/LoadingBarComponent.vue';
+import AlertComponent from '@/components/AlertComponent.vue';
+import UserCharacterService from '@/service/UserCharacterService';
+import router from '@/router';
 
 const characterAvailable = ref(5);
 const userCharacters = ref<IUserCharacter[]>([]);
 const characterSelected = ref<IUserCharacter>();
 const isDeleteModalOpen = ref(false);
+const isDisabled = ref(false);
+const loading = ref(false);
+const showModal = ref(false);
+const message = ref('');
 
 onMounted(() => {
   checkLogged();
+  addUserCharacters();
+  // characterSelected.value = userCharacters.value[0];
+});
+
+function addUserCharacters() {
   const storedUserCharacters = getUserCharacters();
   if (storedUserCharacters) {
     userCharacters.value = storedUserCharacters;
   }
-  // characterSelected.value = userCharacters.value[0];
-});
+}
 
 const selectCharacter = (character: IUserCharacter) => {
   characterSelected.value = character;
@@ -169,6 +192,53 @@ const selectCharacter = (character: IUserCharacter) => {
 
 function toggleModal() {
   isDeleteModalOpen.value = !isDeleteModalOpen.value;
+}
+
+async function exclude(): Promise<void> {
+  try {
+    setLoading(true);
+    if (characterSelected.value) {
+      const response = await UserCharacterService.delete(characterSelected.value.id);
+      if (response.error) {
+        openModal(response.message);
+        return;
+      }
+      removeUserCharacterById(characterSelected.value.id);
+      addUserCharacters();
+      toggleModal();
+      characterSelected.value = undefined;
+    }
+  } catch (error: any) {
+    if (error.response && error.response.data.message) {
+      openModal(error.response.data.message);
+    }
+  } finally {
+    setLoading(false);
+  }
+}
+
+async function select(): Promise<void> {
+  try {
+    setLoading(true);
+    if (characterSelected.value) {
+      await UserCharacterService.select(characterSelected.value.id);
+      saveUserCharacter(characterSelected.value);
+      router.push({ name: 'overview' });
+    }
+  } catch (error: any) {
+    openModal(error);
+    setLoading(false);
+  }
+}
+
+function setLoading(value: boolean) {
+  isDisabled.value = value;
+  loading.value = value;
+}
+
+function openModal(ms: string) {
+  message.value = ms;
+  showModal.value = !showModal.value;
 }
 </script>
 

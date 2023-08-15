@@ -30,6 +30,7 @@ import mapTundraInfame from '@/assets/images/map/tundra_infame_bg.png';
 import goldIcon from '@/assets/images/icons/gold.png';
 import diamondIcon from '@/assets/images/icons/diamond.png';
 import plusWhiteIcon from '@/assets/images/icons/plus_white.png';
+import configMenu from '@/assets/images/menu/config.png';
 
 const images = {
   bG,
@@ -63,7 +64,8 @@ const images = {
   mapTundraInfame,
   goldIcon,
   diamondIcon,
-  plusWhiteIcon
+  plusWhiteIcon,
+  configMenu
 };
 
 export default images;

@@ -7,6 +7,7 @@ const tokenKey = 'token';
 const charactersKey = 'characters';
 const userKey = 'user';
 const userCharactersKey = 'userCharacters';
+const userCharacterKey = 'userCharacter';
 
 export function saveLogin(value: string): void {
   localStorage.setItem(loginKey, JSON.stringify(value));
@@ -65,11 +66,41 @@ export function saveUserCharacters(userCharacters: IUserCharacter[]): void {
 
 export function getUserCharacters(): IUserCharacter[] | null {
   const storedValue = localStorage.getItem(userCharactersKey);
-  return storedValue ? JSON.parse(storedValue) : null;
+  if (storedValue) {
+    const userCharacters = JSON.parse(storedValue);
+    userCharacters.sort((a: IUserCharacter, b: IUserCharacter) => b.id - a.id);
+    return userCharacters;
+  }
+  return null;
 }
 
 export function removeUserCharacters(): void {
   localStorage.removeItem(userCharactersKey);
+}
+
+export function addUserCharacterToList(userCharacter: IUserCharacter): void {
+  const userCharacters = getUserCharacters() || [];
+  userCharacters.push(userCharacter);
+  saveUserCharacters(userCharacters);
+}
+
+export function removeUserCharacterById(id: number): void {
+  const userCharacters = getUserCharacters() || [];
+  const updatedCharacters = userCharacters.filter((char) => char.id !== id);
+  saveUserCharacters(updatedCharacters);
+}
+
+export function saveUserCharacter(user: IUserCharacter): void {
+  localStorage.setItem(userCharacterKey, JSON.stringify(user));
+}
+
+export function getUserCharacter(): IUserCharacter | null {
+  const storedValue = localStorage.getItem(userCharacterKey);
+  return storedValue ? JSON.parse(storedValue) : null;
+}
+
+export function removeUserCharacter(): void {
+  localStorage.removeItem(userCharacterKey);
 }
 
 export function removeAll() {
@@ -77,4 +108,5 @@ export function removeAll() {
   removeCharacters();
   removeUserDetails();
   removeUserCharacters();
+  removeUserCharacter();
 }

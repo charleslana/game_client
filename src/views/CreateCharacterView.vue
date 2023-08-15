@@ -46,7 +46,7 @@
           alt="Character image"
         />
         <div class="centered card name-custom">
-          <form class="p-3" @submit.prevent="null" autocomplete="off">
+          <form class="p-3" @submit.prevent="create" autocomplete="off">
             <div class="mb-3">
               <label for="nameInput" class="form-label">Nome do personagem</label>
               <input
@@ -115,6 +115,7 @@
       </div>
     </div>
     <LoadingBarComponent :isLoading="loading" />
+    <AlertComponent :isShow="showModal" :message="message" />
   </div>
 </template>
 
@@ -131,13 +132,18 @@ import {
 import LoadingBarComponent from '@/components/LoadingBarComponent.vue';
 import router from '@/router';
 import type ICharacter from '@/interface/ICharacter';
-import { getCharacters } from '@/utils/localStorageUtils';
+import { getCharacters, addUserCharacterToList } from '@/utils/localStorageUtils';
+import UserCharacterService from '@/service/UserCharacterService';
+import AlertComponent from '@/components/AlertComponent.vue';
+import type IUserCharacter from '@/interface/IUserCharacter';
 
-const characters = ref<ICharacter[]>();
+const characters = ref<ICharacter[]>([]);
 const characterSelected = ref<ICharacter>();
 const isDisabled = ref(false);
 const name = ref('');
 const loading = ref(false);
+const showModal = ref(false);
+const message = ref('');
 
 const isButtonDisabled = computed(() => {
   return !name.value.trim();
@@ -161,12 +167,56 @@ function setLoading(value: boolean) {
   loading.value = value;
 }
 
-async function create() {
-  setLoading(true);
-  setTimeout(() => {
+async function create(): Promise<void> {
+  try {
+    setLoading(true);
+    if (characterSelected.value) {
+      const response = await UserCharacterService.create(
+        characterSelected.value.id,
+        name.value.trim()
+      );
+      if (response.error) {
+        openModal(response.message);
+        return;
+      }
+      const userCharacter = await getAllUserCharacters();
+      if (userCharacter) {
+        await getUserCharacterProfile(userCharacter.id);
+      }
+      router.push({ name: 'select-character' });
+    }
+  } catch (error: any) {
+    if (error.response && error.response.data.message) {
+      openModal(error.response.data.message);
+      setLoading(false);
+    }
+  }
+}
+
+async function getAllUserCharacters(): Promise<IUserCharacter | null> {
+  try {
+    const response = await UserCharacterService.getAll();
+    return response[0];
+  } catch (error: any) {
+    openModal(error);
     setLoading(false);
-    router.push({ name: 'select-character' });
-  }, 2000);
+    return null;
+  }
+}
+
+async function getUserCharacterProfile(id: number): Promise<void> {
+  try {
+    const response = await UserCharacterService.getProfile(id);
+    addUserCharacterToList(response);
+  } catch (error: any) {
+    openModal(error);
+    setLoading(false);
+  }
+}
+
+function openModal(ms: string) {
+  message.value = ms;
+  showModal.value = !showModal.value;
 }
 </script>
 
