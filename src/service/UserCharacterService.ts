@@ -1,4 +1,5 @@
 import api from '@/config/api';
+import type IAttribute from '@/interface/IAttribute';
 import type IResponse from '@/interface/IResponse';
 import type IUserCharacter from '@/interface/IUserCharacter';
 
@@ -33,5 +34,10 @@ export default class UserCharacterService {
 
   static async logout(): Promise<void> {
     await api.get(`${this.baseUrl}/logout`);
+  }
+
+  static async updateAttribute(attribute: IAttribute): Promise<IResponse> {
+    const response = await api.patch(`${this.baseUrl}/attribute`, attribute);
+    return response.data as IResponse;
   }
 }
