@@ -22,8 +22,10 @@ export function getCharacterImage(characterId: number) {
     case 6:
       return images.characterForceBlader;
     case 7:
-      return images.characterForceGunner;
+      return images.characterGladiator;
     case 8:
+      return images.characterForceGunner;
+    case 9:
       return images.characterDarkMage;
     default:
       return images.characterWarrior;
@@ -45,8 +47,10 @@ export function getCharacterClassIcon(characterId: number) {
     case 6:
       return images.forceBladerClass;
     case 7:
-      return images.forceGunnerClass;
+      return images.gladiatorClass;
     case 8:
+      return images.forceGunnerClass;
+    case 9:
       return images.darkMageClass;
     default:
       return images.warriorClass;
@@ -68,8 +72,10 @@ export function getCharacterPortrait(characterId: number) {
     case 6:
       return images.characterForceBladerPortrait;
     case 7:
-      return images.characterForceGunnerPortrait;
+      return images.characterGladiatorPortrait;
     case 8:
+      return images.characterForceGunnerPortrait;
+    case 9:
       return images.characterDarkMagePortrait;
     default:
       return images.characterWarriorPortrait;
@@ -91,8 +97,10 @@ export function getCharacterName(characterId: number) {
     case 6:
       return 'Espadachim Arcano';
     case 7:
-      return 'Atirador Arcano';
+      return 'Gladiador';
     case 8:
+      return 'Atirador Arcano';
+    case 9:
       return 'Mago Negro';
     default:
       return 'Guerreiro';

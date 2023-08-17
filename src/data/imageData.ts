@@ -7,6 +7,7 @@ import characterWizard from '@/assets/images/characters/wizard.png';
 import characterForceArcher from '@/assets/images/characters/force_archer.png';
 import characterForceShielder from '@/assets/images/characters/force_shielder.png';
 import characterForceBlader from '@/assets/images/characters/force_blader.png';
+import characterGladiator from '@/assets/images/characters/gladiator.png';
 import characterForceGunner from '@/assets/images/characters/force_gunner.png';
 import characterDarkMage from '@/assets/images/characters/dark_mage.png';
 import plusIcon from '@/assets/images/icons/plus.png';
@@ -15,6 +16,7 @@ import bladerClass from '@/assets/images/classes/blader.png';
 import darkMageClass from '@/assets/images/classes/dark_mage.png';
 import forceArcherClass from '@/assets/images/classes/force_archer.png';
 import forceBladerClass from '@/assets/images/classes/force_blader.png';
+import gladiatorClass from '@/assets/images/classes/gladiator.png';
 import forceGunnerClass from '@/assets/images/classes/force_gunner.png';
 import forceShielderClass from '@/assets/images/classes/force_shielder.png';
 import wizardClass from '@/assets/images/classes/wizard.png';
@@ -24,6 +26,7 @@ import characterWizardPortrait from '@/assets/images/characters/wizard_portrait.
 import characterForceArcherPortrait from '@/assets/images/characters/force_archer_portrait.png';
 import characterForceShielderPortrait from '@/assets/images/characters/force_shielder_portrait.png';
 import characterForceBladerPortrait from '@/assets/images/characters/force_blader_portrait.png';
+import characterGladiatorPortrait from '@/assets/images/characters/gladiator_portrait.png';
 import characterForceGunnerPortrait from '@/assets/images/characters/force_gunner_portrait.png';
 import characterDarkMagePortrait from '@/assets/images/characters/dark_mage_portrait.png';
 import mapTundraInfame from '@/assets/images/map/tundra_infame_bg.png';
@@ -42,6 +45,7 @@ const images = {
   characterForceArcher,
   characterForceShielder,
   characterForceBlader,
+  characterGladiator,
   characterForceGunner,
   characterDarkMage,
   plusIcon,
@@ -50,6 +54,7 @@ const images = {
   darkMageClass,
   forceArcherClass,
   forceBladerClass,
+  gladiatorClass,
   forceGunnerClass,
   forceShielderClass,
   wizardClass,
@@ -59,6 +64,7 @@ const images = {
   characterForceArcherPortrait,
   characterForceShielderPortrait,
   characterForceBladerPortrait,
+  characterGladiatorPortrait,
   characterForceGunnerPortrait,
   characterDarkMagePortrait,
   mapTundraInfame,
