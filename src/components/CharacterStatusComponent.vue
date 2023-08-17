@@ -1,6 +1,12 @@
 <template>
   <div v-if="characterSelected">
-    <div v-if="isModalVisible" class="modal" tabindex="-1" style="display: block">
+    <div
+      class="modal"
+      :class="{ show: open }"
+      :style="{ display: open ? 'block' : 'none' }"
+      tabindex="-1"
+      role="dialog"
+    >
       <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header justify-content-center position-relative">
@@ -75,18 +81,21 @@
                   class="form-control mb-2 shadow-none"
                   placeholder="0"
                   v-model="attributeStrength"
+                  @input="onStrengthInput"
                 />
                 <input
                   type="number"
                   class="form-control mb-2 shadow-none"
                   placeholder="0"
                   v-model="attributeIntelligence"
+                  @input="onIntelligenceInput"
                 />
                 <input
                   type="number"
                   class="form-control mb-2 shadow-none"
                   placeholder="0"
                   v-model="attributeDexterity"
+                  @input="onDexterityInput"
                 />
               </div>
               <div class="d-flex flex-column">
@@ -129,36 +138,24 @@
         </div>
       </div>
     </div>
-    <LoadingBarComponent :isLoading="loading" />
-    <AlertComponent :isShow="showModal" :message="message" />
+    <LoadingComponent ref="loadingRef" />
+    <DialogComponent ref="dialogRef" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
-// import type IUserCharacter from '@/interface/IUserCharacter';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { getCharacterName, getCharacterClassIcon } from '@/utils/utils';
 import UserCharacterService from '@/service/UserCharacterService';
 import { saveUserCharacter, getUserCharacter, saveUserCharacters } from '@/utils/localStorageUtils';
-import LoadingBarComponent from '@/components/LoadingBarComponent.vue';
-import AlertComponent from '@/components/AlertComponent.vue';
+import LoadingComponent from '@/components/LoadingComponent.vue';
+import DialogComponent from '@/components/DialogComponent.vue';
+import type { AxiosError } from 'axios';
 
-const props = defineProps({
-  isShow: {
-    type: Boolean,
-    required: true
-  }
-  // characterSelected: {
-  //   type: Object as () => IUserCharacter,
-  //   required: true
-  // }
-});
-
-const isModalVisible = ref(false);
+const open = ref(false);
 const isDisabled = ref(false);
-const loading = ref(false);
-const showModal = ref(false);
-const message = ref('');
+const loadingRef = ref<InstanceType<typeof LoadingComponent> | null>(null);
+const dialogRef = ref<InstanceType<typeof DialogComponent> | null>(null);
 const attributeStrength = ref<number | undefined>();
 const attributeIntelligence = ref<number | undefined>();
 const attributeDexterity = ref<number | undefined>();
@@ -189,16 +186,17 @@ const isDexterityButtonDisabled = computed(() => {
   );
 });
 
-function toggleModal() {
-  isModalVisible.value = !isModalVisible.value;
-}
+const show = () => {
+  open.value = true;
+};
 
-watch(
-  () => props.isShow,
-  () => {
-    toggleModal();
-  }
-);
+const hide = () => {
+  open.value = false;
+};
+
+function toggleModal() {
+  open.value = !open.value;
+}
 
 onMounted(() => {
   window.addEventListener('keydown', handleKeyDown);
@@ -229,11 +227,8 @@ async function updateAttribute(): Promise<void> {
       await getUserCharacterProfile(characterSelected.value.id);
       await getAllUserCharacters();
     }
-  } catch (error: any) {
-    if (error.response && error.response.data.message) {
-      openModal(error.response.data.message);
-      setLoading(false);
-    }
+  } catch (err: unknown) {
+    showError(err);
   }
 }
 
@@ -243,9 +238,8 @@ async function getUserCharacterProfile(id: number): Promise<void> {
     saveUserCharacter(response);
     characterSelected.value = response;
     setLoading(false);
-  } catch (error: any) {
-    openModal(error);
-    setLoading(false);
+  } catch (err: unknown) {
+    showError(err);
   }
 }
 
@@ -253,21 +247,67 @@ async function getAllUserCharacters(): Promise<void> {
   try {
     const response = await UserCharacterService.getAll();
     saveUserCharacters(response);
-  } catch (error: any) {
-    openModal(error);
+  } catch (err: unknown) {
+    showError(err);
+  }
+}
+
+const onStrengthInput = () => {
+  attributeIntelligence.value = undefined;
+  attributeDexterity.value = undefined;
+  const attribute = attributeStrength;
+  if (attribute.value! > characterSelected.value?.point!) {
+    attribute.value = characterSelected.value?.point;
+  }
+  if (attribute.value! < 1) {
+    attribute.value = undefined;
+  }
+};
+
+const onIntelligenceInput = () => {
+  attributeStrength.value = undefined;
+  attributeDexterity.value = undefined;
+  const attribute = attributeIntelligence;
+  if (attribute.value! > characterSelected.value?.point!) {
+    attribute.value = characterSelected.value?.point;
+  }
+  if (attribute.value! < 1) {
+    attribute.value = undefined;
+  }
+};
+
+const onDexterityInput = () => {
+  attributeStrength.value = undefined;
+  attributeIntelligence.value = undefined;
+  const attribute = attributeDexterity;
+  if (attribute.value! > characterSelected.value?.point!) {
+    attribute.value = characterSelected.value?.point;
+  }
+  if (attribute.value! < 1) {
+    attribute.value = undefined;
+  }
+};
+
+function setLoading(value: boolean) {
+  if (value) {
+    loadingRef.value?.showLoading();
+    return;
+  }
+  loadingRef.value?.hideLoading();
+}
+
+function showError(err: unknown) {
+  const error = err as AxiosError<Error>;
+  if (error.response && error.response.data.message) {
+    dialogRef.value?.show(error.response.data.message);
     setLoading(false);
   }
 }
 
-function setLoading(value: boolean) {
-  isDisabled.value = value;
-  loading.value = value;
-}
-
-function openModal(ms: string) {
-  message.value = ms;
-  showModal.value = !showModal.value;
-}
+defineExpose({
+  show,
+  hide
+});
 </script>
 
 <style scoped>

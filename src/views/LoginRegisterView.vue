@@ -125,15 +125,16 @@
         </div>
       </div>
     </div>
-    <LoadingBarComponent :isLoading="loading" />
-    <AlertComponent :isShow="showModal" :message="message" />
+    <LoadingComponent ref="loadingRef" />
+    <DialogComponent ref="dialogRef" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue';
 import images from '@/data/imageData';
-import LoadingBarComponent from '@/components/LoadingBarComponent.vue';
+import LoadingComponent from '@/components/LoadingComponent.vue';
+import DialogComponent from '@/components/DialogComponent.vue';
 import router from '@/router';
 import {
   getLogin,
@@ -145,10 +146,10 @@ import {
   saveUserCharacters
 } from '@/utils/localStorageUtils';
 import PublicService from '@/service/PublicService';
-import AlertComponent from '@/components/AlertComponent.vue';
 import CharacterService from '@/service/CharacterService';
 import UserService from '@/service/UserService';
 import UserCharacterService from '@/service/UserCharacterService';
+import type { AxiosError } from 'axios';
 
 const isLoginModalOpen = ref(true);
 const isRegisterModalOpen = ref(false);
@@ -156,11 +157,10 @@ const email = ref('');
 const password = ref('');
 const confirmPassword = ref('');
 const name = ref('');
-const loading = ref(false);
 const isDisabled = ref(false);
 const isChecked = ref(false);
-const showModal = ref(false);
-const message = ref('');
+const loadingRef = ref<InstanceType<typeof LoadingComponent> | null>(null);
+const dialogRef = ref<InstanceType<typeof DialogComponent> | null>(null);
 
 const isLoginButtonDisabled = computed(() => {
   return !(email.value && password.value);
@@ -197,32 +197,22 @@ async function login(): Promise<void> {
     await getUserDetails();
     await getAllUserCharacters();
     router.push({ name: 'select-server' });
-  } catch (error: any) {
-    if (error.response && error.response.data.message) {
-      openModal(error.response.data.message);
-      setLoading(false);
-    }
+  } catch (err: unknown) {
+    showError(err);
   }
 }
 
 async function register(): Promise<void> {
   try {
     setLoading(true);
-    const response = await PublicService.register({
+    await PublicService.register({
       email: email.value,
       password: password.value,
       name: name.value
     });
-    if (response.error) {
-      openModal(response.message);
-      return;
-    }
     await login();
-  } catch (error: any) {
-    if (error.response && error.response.data.message) {
-      openModal(error.response.data.message);
-      setLoading(false);
-    }
+  } catch (err: unknown) {
+    showError(err);
   }
 }
 
@@ -230,9 +220,8 @@ async function getAllCharacters(): Promise<void> {
   try {
     const response = await CharacterService.getAll();
     saveCharacters(response);
-  } catch (error: any) {
-    openModal(error);
-    setLoading(false);
+  } catch (err: unknown) {
+    showError(err);
   }
 }
 
@@ -240,9 +229,8 @@ async function getUserDetails(): Promise<void> {
   try {
     const response = await UserService.getDetails();
     saveUserDetails(response);
-  } catch (error: any) {
-    openModal(error);
-    setLoading(false);
+  } catch (err: unknown) {
+    showError(err);
   }
 }
 
@@ -250,15 +238,18 @@ async function getAllUserCharacters(): Promise<void> {
   try {
     const response = await UserCharacterService.getAll();
     saveUserCharacters(response);
-  } catch (error: any) {
-    openModal(error);
-    setLoading(false);
+  } catch (err: unknown) {
+    showError(err);
   }
 }
 
 function setLoading(value: boolean) {
   isDisabled.value = value;
-  loading.value = value;
+  if (value) {
+    loadingRef.value?.showLoading();
+    return;
+  }
+  loadingRef.value?.hideLoading();
 }
 
 onMounted(() => {
@@ -281,16 +272,19 @@ function changeLogin() {
   saveLogin(email.value);
 }
 
-function openModal(ms: string) {
-  message.value = ms;
-  showModal.value = !showModal.value;
-}
-
 watch(email, (newEmail, oldEmail) => {
   if (isChecked.value && newEmail !== oldEmail) {
     saveLogin(newEmail);
   }
 });
+
+function showError(err: unknown) {
+  const error = err as AxiosError<Error>;
+  if (error.response && error.response.data.message) {
+    dialogRef.value?.show(error.response.data.message);
+    setLoading(false);
+  }
+}
 </script>
 
 <style scoped>

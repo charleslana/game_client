@@ -1,8 +1,8 @@
 import CreateCharacterViewVue from '@/views/CreateCharacterView.vue';
 import LoginRegisterView from '@/views/LoginRegisterView.vue';
-import OverViewVue from '@/views/OverView.vue';
-import SelectCharacterViewVue from '@/views/SelectCharacterView.vue';
-import SelectServerViewVue from '@/views/SelectServerView.vue';
+import OverView from '@/views/OverView.vue';
+import SelectCharacterView from '@/views/SelectCharacterView.vue';
+import SelectServerView from '@/views/SelectServerView.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
 const router = createRouter({
@@ -17,13 +17,13 @@ const router = createRouter({
     {
       path: '/select-server',
       name: 'select-server',
-      component: SelectServerViewVue,
+      component: SelectServerView,
       meta: { title: 'Cabal Web - Seleção de servidores' }
     },
     {
       path: '/select-character',
       name: 'select-character',
-      component: SelectCharacterViewVue,
+      component: SelectCharacterView,
       meta: { title: 'Cabal Web - Seleção de personagens' }
     },
     {
@@ -35,7 +35,7 @@ const router = createRouter({
     {
       path: '/overview',
       name: 'overview',
-      component: OverViewVue,
+      component: OverView,
       meta: { title: 'Cabal Web - Visão Geral' }
     },
     {

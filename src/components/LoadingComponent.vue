@@ -17,46 +17,47 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, onUnmounted } from 'vue';
 
-const props = defineProps({
-  isLoading: {
-    type: Boolean,
-    required: true
+const loading = ref(false);
+const progressBarWidth = ref(0);
+
+let interval: number | undefined = undefined;
+
+const showLoading = () => {
+  loading.value = true;
+  animateProgressBar(10);
+};
+
+const hideLoading = () => {
+  progressBarWidth.value = 100;
+  setTimeout(() => {
+    loading.value = false;
+    progressBarWidth.value = 0;
+  }, 500);
+};
+
+const animateProgressBar = (seconds: number) => {
+  progressBarWidth.value = 0;
+  const increment = 100 / (seconds * 10);
+  interval = setInterval(() => {
+    progressBarWidth.value += increment;
+    if (progressBarWidth.value >= 100) {
+      clearInterval(interval);
+    }
+  }, 100);
+};
+
+onUnmounted(() => {
+  if (interval) {
+    clearInterval(interval);
   }
 });
-const progressBarWidth = ref(0);
-const loading = ref(false);
 
-let animationInterval: number | undefined = undefined;
-
-function animateProgressBar(targetWidth: number, duration: number) {
-  clearInterval(animationInterval);
-  let startWidth = progressBarWidth.value;
-  const increment = (targetWidth - startWidth) / (duration / 50);
-  animationInterval = setInterval(() => {
-    startWidth += increment;
-    progressBarWidth.value = startWidth;
-    if (startWidth >= targetWidth) {
-      clearInterval(animationInterval);
-    }
-  }, 50);
-}
-
-watch(
-  () => props.isLoading,
-  (newValue) => {
-    if (newValue) {
-      loading.value = true;
-      progressBarWidth.value = 0;
-      animateProgressBar(100, 10000);
-      return;
-    }
-    animateProgressBar(100, 0);
-    progressBarWidth.value = 100;
-    setTimeout(() => (loading.value = false), 500);
-  }
-);
+defineExpose({
+  showLoading,
+  hideLoading
+});
 </script>
 
 <style scoped>

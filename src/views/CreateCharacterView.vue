@@ -114,8 +114,8 @@
         </div>
       </div>
     </div>
-    <LoadingBarComponent :isLoading="loading" />
-    <AlertComponent :isShow="showModal" :message="message" />
+    <LoadingComponent ref="loadingRef" />
+    <DialogComponent ref="dialogRef" />
   </div>
 </template>
 
@@ -129,21 +129,21 @@ import {
   getCharacterName,
   checkLogged
 } from '@/utils/utils';
-import LoadingBarComponent from '@/components/LoadingBarComponent.vue';
+import LoadingComponent from '@/components/LoadingComponent.vue';
+import DialogComponent from '@/components/DialogComponent.vue';
 import router from '@/router';
 import type ICharacter from '@/interface/ICharacter';
 import { getCharacters, addUserCharacterToList } from '@/utils/localStorageUtils';
 import UserCharacterService from '@/service/UserCharacterService';
-import AlertComponent from '@/components/AlertComponent.vue';
 import type IUserCharacter from '@/interface/IUserCharacter';
+import type { AxiosError } from 'axios';
 
 const characters = ref<ICharacter[]>([]);
 const characterSelected = ref<ICharacter>();
 const isDisabled = ref(false);
 const name = ref('');
-const loading = ref(false);
-const showModal = ref(false);
-const message = ref('');
+const loadingRef = ref<InstanceType<typeof LoadingComponent> | null>(null);
+const dialogRef = ref<InstanceType<typeof DialogComponent> | null>(null);
 
 const isButtonDisabled = computed(() => {
   return !name.value.trim();
@@ -162,34 +162,19 @@ const selectCharacter = (character: ICharacter) => {
   name.value = '';
 };
 
-function setLoading(value: boolean) {
-  isDisabled.value = value;
-  loading.value = value;
-}
-
 async function create(): Promise<void> {
   try {
     setLoading(true);
     if (characterSelected.value) {
-      const response = await UserCharacterService.create(
-        characterSelected.value.id,
-        name.value.trim()
-      );
-      if (response.error) {
-        openModal(response.message);
-        return;
-      }
+      await UserCharacterService.create(characterSelected.value.id, name.value.trim());
       const userCharacter = await getAllUserCharacters();
       if (userCharacter) {
         await getUserCharacterProfile(userCharacter.id);
       }
       router.push({ name: 'select-character' });
     }
-  } catch (error: any) {
-    if (error.response && error.response.data.message) {
-      openModal(error.response.data.message);
-      setLoading(false);
-    }
+  } catch (err: unknown) {
+    showError(err);
   }
 }
 
@@ -197,9 +182,8 @@ async function getAllUserCharacters(): Promise<IUserCharacter | null> {
   try {
     const response = await UserCharacterService.getAll();
     return response[0];
-  } catch (error: any) {
-    openModal(error);
-    setLoading(false);
+  } catch (err: unknown) {
+    showError(err);
     return null;
   }
 }
@@ -208,15 +192,26 @@ async function getUserCharacterProfile(id: number): Promise<void> {
   try {
     const response = await UserCharacterService.getProfile(id);
     addUserCharacterToList(response);
-  } catch (error: any) {
-    openModal(error);
-    setLoading(false);
+  } catch (err: unknown) {
+    showError(err);
   }
 }
 
-function openModal(ms: string) {
-  message.value = ms;
-  showModal.value = !showModal.value;
+function setLoading(value: boolean) {
+  isDisabled.value = value;
+  if (value) {
+    loadingRef.value?.showLoading();
+    return;
+  }
+  loadingRef.value?.hideLoading();
+}
+
+function showError(err: unknown) {
+  const error = err as AxiosError<Error>;
+  if (error.response && error.response.data.message) {
+    dialogRef.value?.show(error.response.data.message);
+    setLoading(false);
+  }
 }
 </script>
 

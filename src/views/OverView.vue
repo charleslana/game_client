@@ -53,7 +53,7 @@
           </div>
         </div>
         <div class="d-flex mt-3">
-          <a href="#" @click="openStatusModal">
+          <a href="#" @click="characterStatusRef?.show">
             <div class="d-flex flex-column align-items-center">
               <img
                 :src="getCharacterPortrait(characterSelected.character.id)"
@@ -123,9 +123,9 @@
         ></div>
       </div>
     </div>
-    <CharacterStatusComponent :isShow="showStatus" :characterSelected="characterSelected" />
-    <LoadingBarComponent :isLoading="loading" />
-    <AlertComponent :isShow="showModal" :message="message" />
+    <CharacterStatusComponent ref="characterStatusRef" />
+    <LoadingComponent ref="loadingRef" />
+    <DialogComponent ref="dialogRef" />
   </div>
 </template>
 
@@ -143,17 +143,17 @@ import { getUserCharacter, getUserDetails, removeUserCharacter } from '@/utils/l
 import type IUserCharacter from '@/interface/IUserCharacter';
 import type IUser from '@/interface/IUser';
 import UserCharacterService from '@/service/UserCharacterService';
-import LoadingBarComponent from '@/components/LoadingBarComponent.vue';
-import AlertComponent from '@/components/AlertComponent.vue';
+import LoadingComponent from '@/components/LoadingComponent.vue';
+import DialogComponent from '@/components/DialogComponent.vue';
 import router from '@/router';
 import CharacterStatusComponent from '@/components/CharacterStatusComponent.vue';
+import type { AxiosError } from 'axios';
 
 const characterSelected = ref<IUserCharacter>();
 const userSelected = ref<IUser>();
-const loading = ref(false);
-const showModal = ref(false);
-const message = ref('');
-const showStatus = ref(false);
+const loadingRef = ref<InstanceType<typeof LoadingComponent> | null>(null);
+const dialogRef = ref<InstanceType<typeof DialogComponent> | null>(null);
+const characterStatusRef = ref<InstanceType<typeof CharacterStatusComponent> | null>(null);
 
 onMounted(() => {
   checkLogged();
@@ -174,23 +174,25 @@ async function logout(): Promise<void> {
       removeUserCharacter();
       router.push({ name: 'select-character' });
     }
-  } catch (error: any) {
-    openModal(error);
-    setLoading(false);
+  } catch (err: unknown) {
+    showError(err);
   }
 }
 
 function setLoading(value: boolean) {
-  loading.value = value;
+  if (value) {
+    loadingRef.value?.showLoading();
+    return;
+  }
+  loadingRef.value?.hideLoading();
 }
 
-function openModal(ms: string) {
-  message.value = ms;
-  showModal.value = !showModal.value;
-}
-
-function openStatusModal() {
-  showStatus.value = !showStatus.value;
+function showError(err: unknown) {
+  const error = err as AxiosError<Error>;
+  if (error.response && error.response.data.message) {
+    dialogRef.value?.show(error.response.data.message);
+    setLoading(false);
+  }
 }
 </script>
 

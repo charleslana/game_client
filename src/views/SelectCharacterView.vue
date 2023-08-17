@@ -144,8 +144,8 @@
         </div>
       </div>
     </div>
-    <LoadingBarComponent :isLoading="loading" />
-    <AlertComponent :isShow="showModal" :message="message" />
+    <LoadingComponent ref="loadingRef" />
+    <DialogComponent ref="dialogRef" />
   </div>
 </template>
 
@@ -157,26 +157,26 @@ import type IUserCharacter from '@/interface/IUserCharacter';
 import {
   getUserCharacters,
   removeUserCharacterById,
-  saveUserCharacter
+  saveUserCharacter,
+  removeUserCharacter
 } from '@/utils/localStorageUtils';
-import LoadingBarComponent from '@/components/LoadingBarComponent.vue';
-import AlertComponent from '@/components/AlertComponent.vue';
+import LoadingComponent from '@/components/LoadingComponent.vue';
+import DialogComponent from '@/components/DialogComponent.vue';
 import UserCharacterService from '@/service/UserCharacterService';
 import router from '@/router';
+import type { AxiosError } from 'axios';
 
 const characterAvailable = ref(5);
 const userCharacters = ref<IUserCharacter[]>([]);
 const characterSelected = ref<IUserCharacter>();
 const isDeleteModalOpen = ref(false);
 const isDisabled = ref(false);
-const loading = ref(false);
-const showModal = ref(false);
-const message = ref('');
+const loadingRef = ref<InstanceType<typeof LoadingComponent> | null>(null);
+const dialogRef = ref<InstanceType<typeof DialogComponent> | null>(null);
 
 onMounted(() => {
   checkLogged();
   addUserCharacters();
-  // characterSelected.value = userCharacters.value[0];
 });
 
 function addUserCharacters() {
@@ -198,22 +198,16 @@ async function exclude(): Promise<void> {
   try {
     setLoading(true);
     if (characterSelected.value) {
-      const response = await UserCharacterService.delete(characterSelected.value.id);
-      if (response.error) {
-        openModal(response.message);
-        return;
-      }
+      await UserCharacterService.delete(characterSelected.value.id);
       removeUserCharacterById(characterSelected.value.id);
       addUserCharacters();
       toggleModal();
       characterSelected.value = undefined;
+      removeUserCharacter();
+      setLoading(false);
     }
-  } catch (error: any) {
-    if (error.response && error.response.data.message) {
-      openModal(error.response.data.message);
-    }
-  } finally {
-    setLoading(false);
+  } catch (err: unknown) {
+    showError(err);
   }
 }
 
@@ -225,20 +219,26 @@ async function select(): Promise<void> {
       saveUserCharacter(characterSelected.value);
       router.push({ name: 'overview' });
     }
-  } catch (error: any) {
-    openModal(error);
-    setLoading(false);
+  } catch (err: unknown) {
+    showError(err);
   }
 }
 
 function setLoading(value: boolean) {
   isDisabled.value = value;
-  loading.value = value;
+  if (value) {
+    loadingRef.value?.showLoading();
+    return;
+  }
+  loadingRef.value?.hideLoading();
 }
 
-function openModal(ms: string) {
-  message.value = ms;
-  showModal.value = !showModal.value;
+function showError(err: unknown) {
+  const error = err as AxiosError<Error>;
+  if (error.response && error.response.data.message) {
+    dialogRef.value?.show(error.response.data.message);
+    setLoading(false);
+  }
 }
 </script>
 
