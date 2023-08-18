@@ -1,6 +1,7 @@
 import images from '@/data/imageData';
 import router from '@/router';
 import { getToken, getUserCharacter, removeAll } from './localStorageUtils';
+import type IItem from '@/interface/IItem';
 
 export function logout() {
   removeAll();
@@ -139,4 +140,22 @@ export function checkSession(): void {
   if (!getUserCharacter()) {
     router.push({ name: 'select-character' });
   }
+}
+
+export function getItemImage(itemId: number) {
+  switch (+itemId) {
+    case 1:
+      return images.item1;
+    case 2:
+      return images.item2;
+    default:
+      return images.item1;
+  }
+}
+
+export function generateTooltipItem(item: IItem): string {
+  return `
+   <div class='text-info'>${item.name}</div>
+   <div>Descrição</div>
+          `;
 }

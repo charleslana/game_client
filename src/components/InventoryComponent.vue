@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="characterItems">
     <div
       class="modal"
       :class="{ show: open }"
@@ -22,7 +22,35 @@
             <div class="row">
               <div class="col-sm-6">1</div>
               <div class="col-sm-6 row row-cols-auto">
-                <div class="col separate-column" v-for="index in slotAvailable" :key="index">
+                <div class="w-100 text-center">
+                  Quantidade {{ characterItems.length }} / {{ slotAvailable }}
+                </div>
+                <br />
+                <div
+                  class="col separate-column"
+                  v-for="characterItem in characterItems"
+                  :key="characterItem.id"
+                >
+                  <a
+                    href="#"
+                    v-tooltip
+                    :title="generateTooltipItem(characterItem.item)"
+                    data-bs-html="true"
+                    data-bs-placement="bottom"
+                  >
+                    <div
+                      class="item-bg d-flex justify-content-center align-items-center"
+                      :style="`background-image: url(${images.itemBg});`"
+                    >
+                      <img :src="getItemImage(characterItem.item.id)" alt="Item image" width="40" />
+                    </div>
+                  </a>
+                </div>
+                <div
+                  class="col separate-column"
+                  v-for="index in slotAvailable - characterItems.length"
+                  :key="index"
+                >
                   <a href="#">
                     <div class="item-bg" :style="`background-image: url(${images.itemBg});`"></div>
                   </a>
@@ -40,9 +68,11 @@
 import { getUserCharacterItems } from '@/utils/localStorageUtils';
 import { onMounted, onUnmounted, ref } from 'vue';
 import images from '@/data/imageData';
+import { getItemImage, generateTooltipItem } from '@/utils/utils';
 
 const open = ref(false);
 const slotAvailable = ref(50);
+const characterItems = getUserCharacterItems();
 
 const show = () => {
   open.value = true;
