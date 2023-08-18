@@ -64,7 +64,7 @@
               <p class="text-shadow">Personagem</p>
             </div>
           </a>
-          <a href="#" @click="null" class="ms-5">
+          <a href="#" @click="inventoryRef?.show" class="ms-5">
             <div class="d-flex flex-column align-items-center">
               <img :src="images.bagMenu" alt="Menu image" width="48" class="img-thumbnail" />
               <p class="text-shadow">Inventário</p>
@@ -130,6 +130,7 @@
       </div>
     </div>
     <CharacterStatusComponent ref="characterStatusRef" />
+    <InventoryComponent ref="inventoryRef" />
     <LoadingComponent ref="loadingRef" />
     <DialogComponent ref="dialogRef" />
   </div>
@@ -154,12 +155,14 @@ import DialogComponent from '@/components/DialogComponent.vue';
 import router from '@/router';
 import CharacterStatusComponent from '@/components/CharacterStatusComponent.vue';
 import type { AxiosError } from 'axios';
+import InventoryComponent from '@/components/InventoryComponent.vue';
 
 const characterSelected = ref<IUserCharacter>();
 const userSelected = ref<IUser>();
 const loadingRef = ref<InstanceType<typeof LoadingComponent> | null>(null);
 const dialogRef = ref<InstanceType<typeof DialogComponent> | null>(null);
 const characterStatusRef = ref<InstanceType<typeof CharacterStatusComponent> | null>(null);
+const inventoryRef = ref<InstanceType<typeof InventoryComponent> | null>(null);
 
 onMounted(() => {
   checkLogged();
