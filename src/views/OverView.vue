@@ -64,6 +64,12 @@
               <p class="text-shadow">Personagem</p>
             </div>
           </a>
+          <a href="#" @click="null">
+            <div class="d-flex flex-column align-items-center ms-5">
+              <img :src="images.bagMenu" alt="Menu image" width="48" class="img-thumbnail" />
+              <p class="text-shadow">Inventário</p>
+            </div>
+          </a>
         </div>
       </div>
       <div class="col-sm-6">

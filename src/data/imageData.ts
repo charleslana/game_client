@@ -34,6 +34,7 @@ import goldIcon from '@/assets/images/icons/gold.png';
 import diamondIcon from '@/assets/images/icons/diamond.png';
 import plusWhiteIcon from '@/assets/images/icons/plus_white.png';
 import configMenu from '@/assets/images/menu/config.png';
+import bagMenu from '@/assets/images/menu/bag.png';
 
 const images = {
   bG,
@@ -71,7 +72,8 @@ const images = {
   goldIcon,
   diamondIcon,
   plusWhiteIcon,
-  configMenu
+  configMenu,
+  bagMenu
 };
 
 export default images;
