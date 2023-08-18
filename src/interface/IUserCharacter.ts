@@ -1,4 +1,4 @@
-import type ICharacter from './ICharacter';
+import type ICharacter from '@/interface/ICharacter';
 
 export default interface IUserCharacter {
   id: number;

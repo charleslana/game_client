@@ -1,6 +1,7 @@
 import type ICharacter from '@/interface/ICharacter';
 import type IUser from '@/interface/IUser';
 import type IUserCharacter from '@/interface/IUserCharacter';
+import type IUserCharacterItem from '@/interface/IUserCharacterItem';
 
 const loginKey = 'login';
 const tokenKey = 'token';
@@ -8,6 +9,7 @@ const charactersKey = 'characters';
 const userKey = 'user';
 const userCharactersKey = 'userCharacters';
 const userCharacterKey = 'userCharacter';
+const userCharacterItemsKey = 'userCharacterItems';
 
 export function saveLogin(value: string): void {
   localStorage.setItem(loginKey, JSON.stringify(value));
@@ -103,10 +105,24 @@ export function removeUserCharacter(): void {
   localStorage.removeItem(userCharacterKey);
 }
 
+export function saveUserCharacterItems(userCharacterItems: IUserCharacterItem[]): void {
+  localStorage.setItem(userCharacterItemsKey, JSON.stringify(userCharacterItems));
+}
+
+export function getUserCharacterItems(): IUserCharacterItem[] | null {
+  const storedValue = localStorage.getItem(userCharacterItemsKey);
+  return storedValue ? JSON.parse(storedValue) : null;
+}
+
+export function removeUserCharacterItems(): void {
+  localStorage.removeItem(userCharacterItemsKey);
+}
+
 export function removeAll() {
   removeToken();
   removeCharacters();
   removeUserDetails();
   removeUserCharacters();
   removeUserCharacter();
+  removeUserCharacterItems();
 }

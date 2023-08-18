@@ -158,13 +158,15 @@ import {
   getUserCharacters,
   removeUserCharacterById,
   saveUserCharacter,
-  removeUserCharacter
+  removeUserCharacter,
+  saveUserCharacterItems
 } from '@/utils/localStorageUtils';
 import LoadingComponent from '@/components/LoadingComponent.vue';
 import DialogComponent from '@/components/DialogComponent.vue';
 import UserCharacterService from '@/service/UserCharacterService';
 import router from '@/router';
 import type { AxiosError } from 'axios';
+import UserCharacterItemService from '@/service/UserCharacterItemService';
 
 const characterAvailable = ref(5);
 const userCharacters = ref<IUserCharacter[]>([]);
@@ -216,9 +218,19 @@ async function select(): Promise<void> {
     setLoading(true);
     if (characterSelected.value) {
       await UserCharacterService.select(characterSelected.value.id);
+      await getAllCharacterItems();
       saveUserCharacter(characterSelected.value);
       router.push({ name: 'overview' });
     }
+  } catch (err: unknown) {
+    showError(err);
+  }
+}
+
+async function getAllCharacterItems(): Promise<void> {
+  try {
+    const response = await UserCharacterItemService.getAll();
+    saveUserCharacterItems(response);
   } catch (err: unknown) {
     showError(err);
   }
