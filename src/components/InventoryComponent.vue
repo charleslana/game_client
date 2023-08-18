@@ -19,9 +19,9 @@
             ></button>
           </div>
           <div class="modal-body">
-            <div class="d-flex justify-content-between">
-              <div>1</div>
-              <div>2</div>
+            <div class="row">
+              <div class="col-sm-6">1</div>
+              <div class="col-sm-6">2</div>
             </div>
           </div>
         </div>
