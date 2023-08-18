@@ -31,7 +31,6 @@ api.interceptors.response.use(
     excludedRoutes = ['select-server'];
     if (
       error.response?.status === 403 &&
-      !token &&
       !excludedRoutes.includes(router.currentRoute.value.name as string)
     ) {
       removeUserCharacter();
