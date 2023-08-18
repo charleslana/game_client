@@ -21,9 +21,8 @@ api.interceptors.response.use(
     const token = getToken();
     let excludedRoutes = ['login-register'];
     if (
-      error.response?.status === 401 &&
-      !token &&
-      !excludedRoutes.includes(router.currentRoute.value.name as string)
+      error.response?.status === 401 ||
+      (!token && !excludedRoutes.includes(router.currentRoute.value.name as string))
     ) {
       removeToken();
       router.push({ name: 'login-register' });
