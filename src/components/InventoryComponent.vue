@@ -1,5 +1,5 @@
 <template>
-  <div v-if="characterSelected">
+  <div>
     <div
       class="modal"
       :class="{ show: open }"
@@ -21,7 +21,13 @@
           <div class="modal-body">
             <div class="row">
               <div class="col-sm-6">1</div>
-              <div class="col-sm-6">2</div>
+              <div class="col-sm-6 row row-cols-auto">
+                <div class="col separate-column" v-for="index in slotAvailable" :key="index">
+                  <a href="#">
+                    <div class="item-bg" :style="`background-image: url(${images.itemBg});`"></div>
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -31,11 +37,12 @@
 </template>
 
 <script setup lang="ts">
-import { getUserCharacter } from '@/utils/localStorageUtils';
+import { getUserCharacterItems } from '@/utils/localStorageUtils';
 import { onMounted, onUnmounted, ref } from 'vue';
+import images from '@/data/imageData';
 
 const open = ref(false);
-const characterSelected = ref(getUserCharacter());
+const slotAvailable = ref(50);
 
 const show = () => {
   open.value = true;
@@ -75,5 +82,16 @@ defineExpose({
   top: auto;
   left: auto;
   transform: none !important;
+}
+
+.item-bg {
+  width: 50px;
+  height: 50px;
+  background-size: contain;
+}
+
+.separate-column {
+  background-clip: padding-box;
+  border: 10px solid transparent;
 }
 </style>
