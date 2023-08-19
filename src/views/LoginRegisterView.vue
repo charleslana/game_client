@@ -125,16 +125,12 @@
         </div>
       </div>
     </div>
-    <LoadingComponent ref="loadingRef" />
-    <DialogComponent ref="dialogRef" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue';
 import images from '@/data/imageData';
-import LoadingComponent from '@/components/LoadingComponent.vue';
-import DialogComponent from '@/components/DialogComponent.vue';
 import router from '@/router';
 import {
   getLogin,
@@ -149,8 +145,10 @@ import PublicService from '@/service/PublicService';
 import CharacterService from '@/service/CharacterService';
 import UserService from '@/service/UserService';
 import UserCharacterService from '@/service/UserCharacterService';
-import type { AxiosError } from 'axios';
+import { showError } from '@/utils/utils';
+import { useStore as useLoadingStore } from '@/store/loadingStore';
 
+const loadingStore = useLoadingStore();
 const isLoginModalOpen = ref(true);
 const isRegisterModalOpen = ref(false);
 const email = ref('');
@@ -159,8 +157,6 @@ const confirmPassword = ref('');
 const name = ref('');
 const isDisabled = ref(false);
 const isChecked = ref(false);
-const loadingRef = ref<InstanceType<typeof LoadingComponent> | null>(null);
-const dialogRef = ref<InstanceType<typeof DialogComponent> | null>(null);
 
 const isLoginButtonDisabled = computed(() => {
   return !(email.value && password.value);
@@ -187,7 +183,7 @@ function toggleModal() {
 
 async function login(): Promise<void> {
   try {
-    setLoading(true);
+    loadingStore.showLoading();
     const response = await PublicService.login({
       email: email.value,
       password: password.value
@@ -204,7 +200,7 @@ async function login(): Promise<void> {
 
 async function register(): Promise<void> {
   try {
-    setLoading(true);
+    loadingStore.showLoading();
     await PublicService.register({
       email: email.value,
       password: password.value,
@@ -238,18 +234,10 @@ async function getAllUserCharacters(): Promise<void> {
   try {
     const response = await UserCharacterService.getAll();
     saveUserCharacters(response);
+    loadingStore.hideLoading();
   } catch (err: unknown) {
     showError(err);
   }
-}
-
-function setLoading(value: boolean) {
-  isDisabled.value = value;
-  if (value) {
-    loadingRef.value?.showLoading();
-    return;
-  }
-  loadingRef.value?.hideLoading();
 }
 
 onMounted(() => {
@@ -277,14 +265,6 @@ watch(email, (newEmail, oldEmail) => {
     saveLogin(newEmail);
   }
 });
-
-function showError(err: unknown) {
-  const error = err as AxiosError<Error>;
-  if (error.response && error.response.data.message) {
-    dialogRef.value?.show(error.response.data.message);
-    setLoading(false);
-  }
-}
 </script>
 
 <style scoped>

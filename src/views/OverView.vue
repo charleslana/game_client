@@ -131,8 +131,6 @@
     </div>
     <CharacterStatusComponent ref="characterStatusRef" />
     <InventoryComponent ref="inventoryRef" />
-    <LoadingComponent ref="loadingRef" />
-    <DialogComponent ref="dialogRef" />
   </div>
 </template>
 
@@ -143,24 +141,22 @@ import {
   checkSession,
   getCharacterClassIcon,
   formatNumber,
-  getCharacterPortrait
+  getCharacterPortrait,
+  showError
 } from '@/utils/utils';
 import { onMounted, ref } from 'vue';
 import { getUserCharacter, getUserDetails, removeUserCharacter } from '@/utils/localStorageUtils';
 import type IUserCharacter from '@/interface/IUserCharacter';
 import type IUser from '@/interface/IUser';
 import UserCharacterService from '@/service/UserCharacterService';
-import LoadingComponent from '@/components/LoadingComponent.vue';
-import DialogComponent from '@/components/DialogComponent.vue';
 import router from '@/router';
 import CharacterStatusComponent from '@/components/CharacterStatusComponent.vue';
-import type { AxiosError } from 'axios';
 import InventoryComponent from '@/components/InventoryComponent.vue';
+import { useStore as useLoadingStore } from '@/store/loadingStore';
 
+const loadingStore = useLoadingStore();
 const characterSelected = ref<IUserCharacter>();
 const userSelected = ref<IUser>();
-const loadingRef = ref<InstanceType<typeof LoadingComponent> | null>(null);
-const dialogRef = ref<InstanceType<typeof DialogComponent> | null>(null);
 const characterStatusRef = ref<InstanceType<typeof CharacterStatusComponent> | null>(null);
 const inventoryRef = ref<InstanceType<typeof InventoryComponent> | null>(null);
 
@@ -177,30 +173,15 @@ onMounted(() => {
 
 async function logout(): Promise<void> {
   try {
-    setLoading(true);
+    loadingStore.showLoading();
     if (characterSelected.value) {
       await UserCharacterService.logout();
       removeUserCharacter();
       router.push({ name: 'select-character' });
     }
+    loadingStore.hideLoading();
   } catch (err: unknown) {
     showError(err);
-  }
-}
-
-function setLoading(value: boolean) {
-  if (value) {
-    loadingRef.value?.showLoading();
-    return;
-  }
-  loadingRef.value?.hideLoading();
-}
-
-function showError(err: unknown) {
-  const error = err as AxiosError<Error>;
-  if (error.response && error.response.data.message) {
-    dialogRef.value?.show(error.response.data.message);
-    setLoading(false);
   }
 }
 </script>

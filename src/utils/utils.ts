@@ -1,7 +1,10 @@
 import images from '@/data/imageData';
 import router from '@/router';
-import { getToken, getUserCharacter, removeAll } from './localStorageUtils';
+import { getToken, getUserCharacter, removeAll } from '@/utils/localStorageUtils';
+import { useStore as useLoadingStore } from '@/store/loadingStore';
+import { useStore as useDialogStore } from '@/store/dialogStore';
 import type IItem from '@/interface/IItem';
+import type { AxiosError } from 'axios';
 
 export function logout() {
   removeAll();
@@ -158,4 +161,14 @@ export function generateTooltipItem(item: IItem): string {
    <div class='text-info'>${item.name}</div>
    <div>Descrição</div>
           `;
+}
+
+export function showError(err: unknown) {
+  const error = err as AxiosError<Error>;
+  if (error.response && error.response.data.message) {
+    const loadingStore = useLoadingStore();
+    const dialogStore = useDialogStore();
+    dialogStore.show(error.response.data.message);
+    loadingStore.hideLoading();
+  }
 }

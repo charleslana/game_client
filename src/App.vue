@@ -1,5 +1,7 @@
 <template>
   <RouterView />
+  <LoadingComponent />
+  <DialogComponent />
 </template>
 
 <script setup lang="ts">

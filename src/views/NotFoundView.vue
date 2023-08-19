@@ -1,6 +1,6 @@
 <template>
   <div class="background-container" :style="`background-image: url(${images.bG});`">
-    <div class="modal fade show" style="display: block" tabindex="-1" role="dialog">
+    <div class="modal fade show" tabindex="-1" role="dialog">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header justify-content-center">
@@ -32,5 +32,9 @@ import images from '@/data/imageData';
   height: 100vh;
   background-size: cover;
   background-position: center;
+}
+
+.modal {
+  display: block;
 }
 </style>
