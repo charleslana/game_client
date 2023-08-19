@@ -16,6 +16,7 @@
             <div>{{ characterSelected.name }}</div>
             <div>Nv. {{ characterSelected.level }}</div>
           </div>
+          <h5 class="ms-5">Poder: <span class="text-cyan text-shadow">5.000</span></h5>
         </div>
         <div>
           <div class="progress position-relative text-shadow">
@@ -98,7 +99,7 @@
       </div>
       <div class="col-sm-3">
         <div class="d-flex mt-2">
-          <a href="#" @click="logout">
+          <a href="#" @click="settingRef?.show">
             <div class="d-flex flex-column align-items-center">
               <img :src="images.configMenu" alt="Menu icon" width="50" class="img-thumbnail" />
               <p class="text-shadow">Configurações</p>
@@ -131,6 +132,7 @@
     </div>
     <CharacterStatusComponent ref="characterStatusRef" />
     <InventoryComponent ref="inventoryRef" />
+    <SettingComponent ref="settingRef" />
   </div>
 </template>
 
@@ -141,24 +143,21 @@ import {
   checkSession,
   getCharacterClassIcon,
   formatNumber,
-  getCharacterPortrait,
-  showError
+  getCharacterPortrait
 } from '@/utils/utils';
 import { onMounted, ref } from 'vue';
-import { getUserCharacter, getUserDetails, removeUserCharacter } from '@/utils/localStorageUtils';
+import { getUserCharacter, getUserDetails } from '@/utils/localStorageUtils';
 import type IUserCharacter from '@/interface/IUserCharacter';
 import type IUser from '@/interface/IUser';
-import UserCharacterService from '@/service/UserCharacterService';
-import router from '@/router';
 import CharacterStatusComponent from '@/components/CharacterStatusComponent.vue';
 import InventoryComponent from '@/components/InventoryComponent.vue';
-import { useStore as useLoadingStore } from '@/store/loadingStore';
+import SettingComponent from '@/components/SettingComponent.vue';
 
-const loadingStore = useLoadingStore();
 const characterSelected = ref<IUserCharacter>();
 const userSelected = ref<IUser>();
 const characterStatusRef = ref<InstanceType<typeof CharacterStatusComponent> | null>(null);
 const inventoryRef = ref<InstanceType<typeof InventoryComponent> | null>(null);
+const settingRef = ref<InstanceType<typeof SettingComponent> | null>(null);
 
 onMounted(() => {
   checkLogged();
@@ -170,20 +169,6 @@ onMounted(() => {
     characterSelected.value = userCharacter;
   }
 });
-
-async function logout(): Promise<void> {
-  try {
-    loadingStore.showLoading();
-    if (characterSelected.value) {
-      await UserCharacterService.logout();
-      removeUserCharacter();
-      router.push({ name: 'select-character' });
-    }
-    loadingStore.hideLoading();
-  } catch (err: unknown) {
-    showError(err);
-  }
-}
 </script>
 
 <style scoped>

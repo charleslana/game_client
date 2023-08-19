@@ -34,7 +34,7 @@
                   <a
                     href="#"
                     v-tooltip
-                    :title="generateTooltipItem(characterItem.item)"
+                    :title="generateTooltipItem(characterItem)"
                     data-bs-html="true"
                     data-bs-placement="bottom"
                   >

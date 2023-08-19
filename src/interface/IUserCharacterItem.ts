@@ -7,4 +7,5 @@ export default interface IUserCharacterItem {
   equipped: number | null;
   createdAt: Date;
   item: IItem;
+  price: number;
 }

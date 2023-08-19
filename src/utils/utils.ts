@@ -3,8 +3,8 @@ import router from '@/router';
 import { getToken, getUserCharacter, removeAll } from '@/utils/localStorageUtils';
 import { useStore as useLoadingStore } from '@/store/loadingStore';
 import { useStore as useDialogStore } from '@/store/dialogStore';
-import type IItem from '@/interface/IItem';
 import type { AxiosError } from 'axios';
+import type IUserCharacterItem from '@/interface/IUserCharacterItem';
 
 export function logout() {
   removeAll();
@@ -156,10 +156,15 @@ export function getItemImage(itemId: number) {
   }
 }
 
-export function generateTooltipItem(item: IItem): string {
+export function generateTooltipItem(userCharacterItem: IUserCharacterItem): string {
   return `
-   <div class='text-info'>${item.name}</div>
-   <div>Descrição</div>
+  ${
+    userCharacterItem.price
+      ? `<div>Preço: <span class='text-cyan'>${userCharacterItem.price}</span> Alz</div>`
+      : ''
+  }
+   <div class='text-info'>${userCharacterItem.item.name}</div>
+   ${userCharacterItem.item.description ? `<div>${userCharacterItem.item.description}</div>` : ''}
           `;
 }
 
