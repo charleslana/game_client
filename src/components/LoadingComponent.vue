@@ -1,5 +1,5 @@
 <template>
-  <div class="loading-overlay" :class="{ 'd-none': !loading }">
+  <div class="loading-overlay" :class="{ 'd-none': !isLoading }">
     <div class="loading-content">
       <div class="progress">
         <div
@@ -17,22 +17,26 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onUnmounted } from 'vue';
+import { ref, onUnmounted, watchEffect } from 'vue';
+import { useStore } from '@/store/loadingStore';
 
-const loading = ref(false);
+const store = useStore();
+
+const isLoading = ref(store.isLoading);
+
 const progressBarWidth = ref(0);
 
 let interval: number | undefined = undefined;
 
 const showLoading = () => {
-  loading.value = true;
+  isLoading.value = true;
   animateProgressBar(10);
 };
 
 const hideLoading = () => {
   progressBarWidth.value = 100;
   setTimeout(() => {
-    loading.value = false;
+    isLoading.value = false;
     progressBarWidth.value = 0;
   }, 500);
 };
@@ -52,6 +56,14 @@ onUnmounted(() => {
   if (interval) {
     clearInterval(interval);
   }
+});
+
+watchEffect(() => {
+  if (store.isLoading) {
+    showLoading();
+    return;
+  }
+  hideLoading();
 });
 
 defineExpose({

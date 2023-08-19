@@ -144,15 +144,19 @@
         </div>
       </div>
     </div>
-    <LoadingComponent ref="loadingRef" />
-    <DialogComponent ref="dialogRef" />
   </div>
 </template>
 
 <script setup lang="ts">
 import images from '@/data/imageData';
 import { onMounted, ref } from 'vue';
-import { getCharacterClassIcon, getCharacterImage, formatDate, checkLogged } from '@/utils/utils';
+import {
+  getCharacterClassIcon,
+  getCharacterImage,
+  formatDate,
+  checkLogged,
+  showError
+} from '@/utils/utils';
 import type IUserCharacter from '@/interface/IUserCharacter';
 import {
   getUserCharacters,
@@ -161,20 +165,19 @@ import {
   removeUserCharacter,
   saveUserCharacterItems
 } from '@/utils/localStorageUtils';
-import LoadingComponent from '@/components/LoadingComponent.vue';
-import DialogComponent from '@/components/DialogComponent.vue';
 import UserCharacterService from '@/service/UserCharacterService';
 import router from '@/router';
-import type { AxiosError } from 'axios';
 import UserCharacterItemService from '@/service/UserCharacterItemService';
+import { useStore as useLoadingStore } from '@/store/loadingStore';
+import { useStore as useSelectCharacterStore } from '@/store/selectCharacterStore';
 
+const loadingStore = useLoadingStore();
+const selectCharacterStore = useSelectCharacterStore();
 const characterAvailable = ref(5);
 const userCharacters = ref<IUserCharacter[]>([]);
 const characterSelected = ref<IUserCharacter>();
 const isDeleteModalOpen = ref(false);
 const isDisabled = ref(false);
-const loadingRef = ref<InstanceType<typeof LoadingComponent> | null>(null);
-const dialogRef = ref<InstanceType<typeof DialogComponent> | null>(null);
 
 onMounted(() => {
   checkLogged();
@@ -185,6 +188,10 @@ function addUserCharacters() {
   const storedUserCharacters = getUserCharacters();
   if (storedUserCharacters) {
     userCharacters.value = storedUserCharacters;
+  }
+  if (selectCharacterStore.isNew && storedUserCharacters) {
+    selectCharacter(storedUserCharacters[0]);
+    selectCharacterStore.hide();
   }
 }
 
@@ -198,7 +205,7 @@ function toggleModal() {
 
 async function exclude(): Promise<void> {
   try {
-    setLoading(true);
+    loadingStore.showLoading();
     if (characterSelected.value) {
       await UserCharacterService.delete(characterSelected.value.id);
       removeUserCharacterById(characterSelected.value.id);
@@ -206,7 +213,7 @@ async function exclude(): Promise<void> {
       toggleModal();
       characterSelected.value = undefined;
       removeUserCharacter();
-      setLoading(false);
+      loadingStore.hideLoading();
     }
   } catch (err: unknown) {
     showError(err);
@@ -215,12 +222,13 @@ async function exclude(): Promise<void> {
 
 async function select(): Promise<void> {
   try {
-    setLoading(true);
+    loadingStore.showLoading();
     if (characterSelected.value) {
       await UserCharacterService.select(characterSelected.value.id);
       await getAllCharacterItems();
       saveUserCharacter(characterSelected.value);
       router.push({ name: 'overview' });
+      loadingStore.hideLoading();
     }
   } catch (err: unknown) {
     showError(err);
@@ -233,23 +241,6 @@ async function getAllCharacterItems(): Promise<void> {
     saveUserCharacterItems(response);
   } catch (err: unknown) {
     showError(err);
-  }
-}
-
-function setLoading(value: boolean) {
-  isDisabled.value = value;
-  if (value) {
-    loadingRef.value?.showLoading();
-    return;
-  }
-  loadingRef.value?.hideLoading();
-}
-
-function showError(err: unknown) {
-  const error = err as AxiosError<Error>;
-  if (error.response && error.response.data.message) {
-    dialogRef.value?.show(error.response.data.message);
-    setLoading(false);
   }
 }
 </script>

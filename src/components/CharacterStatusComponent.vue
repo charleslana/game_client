@@ -138,24 +138,19 @@
         </div>
       </div>
     </div>
-    <LoadingComponent ref="loadingRef" />
-    <DialogComponent ref="dialogRef" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue';
-import { getCharacterName, getCharacterClassIcon } from '@/utils/utils';
+import { getCharacterName, getCharacterClassIcon, showError } from '@/utils/utils';
 import UserCharacterService from '@/service/UserCharacterService';
 import { saveUserCharacter, getUserCharacter, saveUserCharacters } from '@/utils/localStorageUtils';
-import LoadingComponent from '@/components/LoadingComponent.vue';
-import DialogComponent from '@/components/DialogComponent.vue';
-import type { AxiosError } from 'axios';
+import { useStore as useLoadingStore } from '@/store/loadingStore';
 
+const loadingStore = useLoadingStore();
 const open = ref(false);
 const isDisabled = ref(false);
-const loadingRef = ref<InstanceType<typeof LoadingComponent> | null>(null);
-const dialogRef = ref<InstanceType<typeof DialogComponent> | null>(null);
 const attributeStrength = ref<number | undefined>();
 const attributeIntelligence = ref<number | undefined>();
 const attributeDexterity = ref<number | undefined>();
@@ -214,7 +209,7 @@ onUnmounted(() => {
 
 async function updateAttribute(): Promise<void> {
   try {
-    setLoading(true);
+    loadingStore.showLoading();
     if (characterSelected.value) {
       await UserCharacterService.updateAttribute({
         strength: attributeStrength.value,
@@ -237,7 +232,6 @@ async function getUserCharacterProfile(id: number): Promise<void> {
     const response = await UserCharacterService.getProfile(id);
     saveUserCharacter(response);
     characterSelected.value = response;
-    setLoading(false);
   } catch (err: unknown) {
     showError(err);
   }
@@ -247,6 +241,7 @@ async function getAllUserCharacters(): Promise<void> {
   try {
     const response = await UserCharacterService.getAll();
     saveUserCharacters(response);
+    loadingStore.hideLoading();
   } catch (err: unknown) {
     showError(err);
   }
@@ -287,22 +282,6 @@ const onDexterityInput = () => {
     attribute.value = undefined;
   }
 };
-
-function setLoading(value: boolean) {
-  if (value) {
-    loadingRef.value?.showLoading();
-    return;
-  }
-  loadingRef.value?.hideLoading();
-}
-
-function showError(err: unknown) {
-  const error = err as AxiosError<Error>;
-  if (error.response && error.response.data.message) {
-    dialogRef.value?.show(error.response.data.message);
-    setLoading(false);
-  }
-}
 
 defineExpose({
   show,

@@ -1,61 +1,65 @@
 <template>
-  <div class="background-container" :style="`background-image: url(${images.bG});`">
-    <div class="container">
-      <div class="row justify-content-end">
-        <div class="col-md-6 mt-3">
-          <h3 class="text-shadow">Bem vindo, {{ getUserDetails()?.name }}</h3>
-        </div>
-        <div class="col-md-6 mt-3">
-          <h3 class="text-shadow">Selecione o servidor</h3>
-          <div class="accordion accordion-flush" id="accordionExample">
-            <div class="accordion-item mb-2" v-for="(item, index) in accordionItems" :key="index">
-              <h2 class="accordion-header" :id="`heading${index}`">
-                <button
-                  class="accordion-button shadow-none"
-                  :class="{ collapsed: activeAccordion === index }"
-                  type="button"
-                  @click="toggleAccordion(index)"
+  <div v-if="userDetails">
+    <div class="background-container" :style="`background-image: url(${images.bG});`">
+      <div class="container">
+        <div class="row justify-content-end">
+          <div class="col-md-6 mt-3">
+            <h3 class="text-shadow">Bem vindo, {{ userDetails.name }}</h3>
+          </div>
+          <div class="col-md-6 mt-3">
+            <h3 class="text-shadow">Selecione o servidor</h3>
+            <div class="accordion accordion-flush" id="accordionExample">
+              <div class="accordion-item mb-2" v-for="(item, index) in accordionItems" :key="index">
+                <h2 class="accordion-header" :id="`heading${index}`">
+                  <button
+                    class="accordion-button shadow-none"
+                    :class="{ collapsed: activeAccordion === index }"
+                    type="button"
+                    @click="toggleAccordion(index)"
+                  >
+                    {{ item.title }}
+                  </button>
+                </h2>
+                <div
+                  :id="`collapse${index}`"
+                  class="accordion-collapse collapse"
+                  :class="{ show: activeAccordion === index }"
+                  :aria-labelledby="`heading${index}`"
+                  data-bs-parent="#accordionExample"
                 >
-                  {{ item.title }}
-                </button>
-              </h2>
-              <div
-                :id="`collapse${index}`"
-                class="accordion-collapse collapse"
-                :class="{ show: activeAccordion === index }"
-                :aria-labelledby="`heading${index}`"
-                data-bs-parent="#accordionExample"
-              >
-                <div class="accordion-body">
-                  <ul class="list-group" v-if="index < 1">
-                    <a href="#">
-                      <li
-                        class="list-group-item active d-flex justify-content-between align-items-start"
-                      >
-                        <div class="ms-2 me-auto">{{ item.content }}</div>
-                        <div>Vazio</div>
-                      </li>
-                    </a>
-                  </ul>
+                  <div class="accordion-body">
+                    <ul class="list-group" v-if="index < 1">
+                      <a href="#">
+                        <li
+                          class="list-group-item active d-flex justify-content-between align-items-start"
+                        >
+                          <div class="ms-2 me-auto">{{ item.content }}</div>
+                          <div>Vazio</div>
+                        </li>
+                      </a>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="select-server px-2 w-100 d-flex justify-content-between">
-      <div>
-        <button class="btn btn-dark text-shadow shadow-none" @click="logout">Sair da conta</button>
-      </div>
-      <div>
-        <button
-          class="btn btn-secondary text-shadow shadow-none"
-          :disabled="isSelectServerButtonDisabled"
-          @click="$router.push({ name: 'select-character' })"
-        >
-          Entrar no servidor
-        </button>
+      <div class="select-server px-2 w-100 d-flex justify-content-between">
+        <div>
+          <button class="btn btn-dark text-shadow shadow-none" @click="logout">
+            Sair da conta
+          </button>
+        </div>
+        <div>
+          <button
+            class="btn btn-secondary text-shadow shadow-none"
+            :disabled="isSelectServerButtonDisabled"
+            @click="$router.push({ name: 'select-character' })"
+          >
+            Entrar no servidor
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -83,6 +87,7 @@ const accordionItems = [
 ];
 
 const activeAccordion = ref<number | null>(0);
+const userDetails = getUserDetails();
 
 function toggleAccordion(index: number) {
   if (activeAccordion.value === index) {

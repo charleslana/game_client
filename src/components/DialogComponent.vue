@@ -1,8 +1,8 @@
 <template>
   <div
     class="modal fade"
-    :class="{ show: open }"
-    :style="{ display: open ? 'block' : 'none' }"
+    :class="{ show: isShow }"
+    :style="{ display: isShow ? 'block' : 'none' }"
     tabindex="-1"
     role="dialog"
   >
@@ -23,19 +23,32 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watchEffect } from 'vue';
+import { useStore } from '@/store/dialogStore';
 
-const open = ref(false);
+const store = useStore();
+
+const isShow = ref(store.open);
+
 const message = ref('');
 
 const show = (text: string) => {
   message.value = text;
-  open.value = true;
+  isShow.value = true;
 };
 
 const hide = () => {
-  open.value = false;
+  message.value = '';
+  isShow.value = false;
+  store.hide();
 };
+
+watchEffect(() => {
+  if (store.open) {
+    show(store.message);
+    return;
+  }
+});
 
 defineExpose({
   show,
