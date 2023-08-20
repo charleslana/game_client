@@ -30,7 +30,7 @@ import characterGladiatorPortrait from '@/assets/images/characters/gladiator_por
 import characterForceGunnerPortrait from '@/assets/images/characters/force_gunner_portrait.png';
 import characterDarkMagePortrait from '@/assets/images/characters/dark_mage_portrait.png';
 import mapTundraInfame from '@/assets/images/map/tundra_infame_bg.png';
-import goldIcon from '@/assets/images/icons/gold.png';
+import alzIcon from '@/assets/images/icons/alz.png';
 import diamondIcon from '@/assets/images/icons/diamond.png';
 import plusWhiteIcon from '@/assets/images/icons/plus_white.png';
 import configMenu from '@/assets/images/menu/config.png';
@@ -38,6 +38,7 @@ import bagMenu from '@/assets/images/menu/bag.png';
 import itemBg from '@/assets/images/inventory/item_bg.png';
 import item1 from '@/assets/images/items/1.png';
 import item2 from '@/assets/images/items/2.png';
+import item3 from '@/assets/images/items/3.png';
 
 const images = {
   bG,
@@ -72,14 +73,15 @@ const images = {
   characterForceGunnerPortrait,
   characterDarkMagePortrait,
   mapTundraInfame,
-  goldIcon,
+  alzIcon,
   diamondIcon,
   plusWhiteIcon,
   configMenu,
   bagMenu,
   itemBg,
   item1,
-  item2
+  item2,
+  item3
 };
 
 export default images;

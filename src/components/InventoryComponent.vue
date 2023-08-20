@@ -20,14 +20,28 @@
           </div>
           <div class="modal-body">
             <div class="row">
-              <div class="col-sm-6">1</div>
+              <div class="col-sm-6">
+                <div class="w-100 text-center mb-2">Equipamentos</div>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                  <div class="square"></div>
+                  <div class="square"></div>
+                  <div class="square"></div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                  <div class="square"></div>
+                  <div class="square"></div>
+                  <div class="square"></div>
+                </div>
+                <div class="d-flex justify-content-center align-items-center mb-4">
+                  <div class="square"></div>
+                </div>
+              </div>
               <div class="col-sm-6 row row-cols-auto">
-                <div class="w-100 text-center">
+                <div class="w-100 text-center mb-2">
                   Quantidade {{ characterItems.length }} / {{ slotAvailable }}
                 </div>
-                <br />
                 <div
-                  class="col separate-column"
+                  class="col p-0"
                   v-for="characterItem in characterItems"
                   :key="characterItem.id"
                 >
@@ -36,7 +50,7 @@
                     v-tooltip
                     :title="generateTooltipItem(characterItem)"
                     data-bs-html="true"
-                    data-bs-placement="bottom"
+                    data-bs-placement="auto"
                   >
                     <div
                       class="item-bg d-flex justify-content-center align-items-center"
@@ -47,7 +61,7 @@
                   </a>
                 </div>
                 <div
-                  class="col separate-column"
+                  class="col p-0"
                   v-for="index in slotAvailable - characterItems.length"
                   :key="index"
                 >
@@ -68,7 +82,8 @@
 import { getUserCharacterItems } from '@/utils/localStorageUtils';
 import { onMounted, onUnmounted, ref } from 'vue';
 import images from '@/data/imageData';
-import { getItemImage, generateTooltipItem } from '@/utils/utils';
+import { generateTooltipItem } from '@/utils/tooltipUtils';
+import { getItemImage } from '@/utils/itemUtils';
 
 const open = ref(false);
 const slotAvailable = ref(50);
@@ -120,8 +135,14 @@ defineExpose({
   background-size: contain;
 }
 
-.separate-column {
-  background-clip: padding-box;
-  border: 10px solid transparent;
+img {
+  height: 87%;
+  object-fit: contain;
+}
+
+.square {
+  width: 70px;
+  height: 70px;
+  border: 2px solid white;
 }
 </style>

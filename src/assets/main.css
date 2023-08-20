@@ -118,3 +118,8 @@ a {
 .text-cyan {
   color: #5bced3;
 }
+
+.separate-column {
+  background-clip: padding-box;
+  border: 10px solid transparent;
+}

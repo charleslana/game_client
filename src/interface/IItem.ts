@@ -12,7 +12,11 @@ export default interface IItem {
   dexterity: number | null;
   hp: number | null;
   mp: number | null;
+  attack: number | null;
+  magicAttack: number | null;
+  attackRate: number | null;
   defense: number | null;
+  magicDefense: number | null;
   class: ClassEnum | null;
   type: ItemTypeEnum | null;
   equipmentType: ItemEquipmentTypeEnum | null;

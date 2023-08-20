@@ -81,7 +81,7 @@
             title="Alz"
             data-bs-placement="bottom"
           >
-            <img :src="images.goldIcon" alt="Icon" height="25" class="me-2" />
+            <img :src="images.alzIcon" alt="Icon" height="25" class="me-2" />
             <div class="me-2">{{ formatNumber(characterSelected.alz) }}</div>
             <img :src="images.plusWhiteIcon" alt="Icon" height="25" class="me-2 plus-icon" />
           </div>

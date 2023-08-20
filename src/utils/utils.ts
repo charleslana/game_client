@@ -1,10 +1,10 @@
+import ClassEnum from '@/enum/ClassEnum';
 import images from '@/data/imageData';
 import router from '@/router';
 import { getToken, getUserCharacter, removeAll } from '@/utils/localStorageUtils';
 import { useStore as useLoadingStore } from '@/store/loadingStore';
 import { useStore as useDialogStore } from '@/store/dialogStore';
 import type { AxiosError } from 'axios';
-import type IUserCharacterItem from '@/interface/IUserCharacterItem';
 
 export function logout() {
   removeAll();
@@ -111,6 +111,12 @@ export function getCharacterName(characterId: number) {
   }
 }
 
+export function getIndexForClass(classValue: ClassEnum) {
+  const classKeys = Object.keys(ClassEnum) as Array<keyof typeof ClassEnum>;
+  const index = classKeys.findIndex((key) => ClassEnum[key] === classValue) + 1;
+  return getCharacterName(index !== 0 ? index : 0);
+}
+
 export const formatNumber = (number: number): string => {
   number = +number;
   return number.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
@@ -145,29 +151,6 @@ export function checkSession(): void {
   }
 }
 
-export function getItemImage(itemId: number) {
-  switch (+itemId) {
-    case 1:
-      return images.item1;
-    case 2:
-      return images.item2;
-    default:
-      return images.item1;
-  }
-}
-
-export function generateTooltipItem(userCharacterItem: IUserCharacterItem): string {
-  return `
-  ${
-    userCharacterItem.price
-      ? `<div>Preço: <span class='text-cyan'>${userCharacterItem.price}</span> Alz</div>`
-      : ''
-  }
-   <div class='text-info'>${userCharacterItem.item.name}</div>
-   ${userCharacterItem.item.description ? `<div>${userCharacterItem.item.description}</div>` : ''}
-          `;
-}
-
 export function showError(err: unknown) {
   const error = err as AxiosError<Error>;
   if (error.response && error.response.data.message) {
@@ -177,3 +160,24 @@ export function showError(err: unknown) {
     loadingStore.hideLoading();
   }
 }
+
+export const getRemainingTime = (targetDate: Date): string => {
+  const currentDate = new Date();
+  const timeDifference = targetDate.getTime() - currentDate.getTime();
+  if (timeDifference > 86400000) {
+    const daysRemaining = Math.floor(timeDifference / 86400000);
+    return `${daysRemaining} ${daysRemaining === 1 ? 'dia' : 'dias'} restante${
+      daysRemaining === 1 ? '' : 's'
+    }`;
+  }
+  if (timeDifference > 3600000) {
+    const hoursRemaining = Math.floor(timeDifference / 3600000);
+    return `${hoursRemaining} ${hoursRemaining === 1 ? 'hora' : 'horas'} restante${
+      hoursRemaining === 1 ? '' : 's'
+    }`;
+  }
+  const minutesRemaining = Math.floor(timeDifference / 60000);
+  return `${minutesRemaining} ${minutesRemaining === 1 ? 'minuto' : 'minutos'} restante${
+    minutesRemaining === 1 ? '' : 's'
+  }`;
+};
